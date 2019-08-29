@@ -2,9 +2,7 @@ package com.algos.mitch.services
 
 import com.algos.mitch.algorithms.AlgorithmResponse
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.springframework.http.ResponseEntity
 
 
 class AlgorithmServiceTest {
@@ -12,12 +10,15 @@ class AlgorithmServiceTest {
     val subject = AlgorithmService()
 
     @Test
-    fun `findAllAlgorithms - should return a list of all algorithmResponses` () {
-        val expected = ResponseEntity.ok(AlgorithmResponse())
+    fun `findAllAlgorithms - should return a list of all algorithmResponses`() {
+        val expected = listOf(
+                AlgorithmResponse("hello world", isSolved = false),
+                AlgorithmResponse("palindrome", isSolved = false)
+        )
 
-         subject.processAllAlgorithms().let { result ->
-             assertThat(result).isEqualTo(expected)
-         }
+        subject.processAllAlgorithms().let { result ->
+            assertThat(result).isEqualTo(expected)
+        }
 
     }
 
@@ -40,13 +41,11 @@ class AlgorithmServiceTest {
     }
 
     @Test
-    fun `findAlgorithmByName - given an invalid algo name, should throw an illegalArgument exception`() {
+    fun `findAlgorithmByName - given an invalid algo name, should return null`() {
 
-        assertThatThrownBy {
-            subject.findAlgorithmByName("non-existant algo")
-        }.isInstanceOf(IllegalArgumentException::class.java)
-                .hasMessage("Algorithm not currently supported")
-
+        subject.findAlgorithmByName("bacon").let { result ->
+            assertThat(result).isNull()
+        }
 
     }
 }

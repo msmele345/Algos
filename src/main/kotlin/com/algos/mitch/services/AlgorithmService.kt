@@ -9,18 +9,14 @@ import org.springframework.web.bind.annotation.ResponseBody
 class AlgorithmService {
 
     @ResponseBody
-    fun processAllAlgorithms() : AlgorithmResponse {
-        //db call goes here
-        return AlgorithmResponse()
+    fun processAllAlgorithms(): List<AlgorithmResponse> {
+        return algoMap.map { it.value }
 
     }
 
     fun findAlgorithmByName(name: String): AlgorithmResponse? {
-        return algoMap[name] ?: throw IllegalArgumentException("Algorithm not currently supported")
+        return algoMap[name]
     }
-
-
-
 
 
     companion object {
@@ -30,3 +26,4 @@ class AlgorithmService {
         )
     }
 }
+//db call goes here
