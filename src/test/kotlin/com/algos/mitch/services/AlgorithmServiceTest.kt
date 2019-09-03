@@ -7,6 +7,7 @@ import org.junit.Test
 
 class AlgorithmServiceTest {
 
+
     val subject = AlgorithmService()
 
     @Test

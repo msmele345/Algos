@@ -1,4 +1,4 @@
-package com.algos.mitch
+package com.algos.mitch.algorithms
 
 import com.algos.mitch.algorithms.VarargsCount
 import org.assertj.core.api.Assertions.assertThat

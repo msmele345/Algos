@@ -26,4 +26,3 @@ class AlgorithmService {
         )
     }
 }
-//db call goes here

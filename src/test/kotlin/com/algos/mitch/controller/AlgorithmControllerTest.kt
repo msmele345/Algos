@@ -16,17 +16,18 @@ class AlgorithmControllerTest {
 
     val mockService: AlgorithmService = mock()
 
-
     val subject = AlgorithmController(mockService)
 
-    val mockMvc = MockMvcBuilders.standaloneSetup(subject).build()
+    val mockMvc = MockMvcBuilders
+            .standaloneSetup(subject)
+            .build()
 
     @Test
     fun `getAllAlgorithms - should invoke the algo service`() {
 
-        whenever(mockService.processAllAlgorithms()) doReturn listOf(AlgorithmResponse("hello world"))
+        whenever(mockService.processAllAlgorithms()) doReturn listOf(AlgorithmResponse("hello world"), AlgorithmResponse("palindrome", isSolved = false))
 
-        val expectedResponse = jacksonObjectMapper().writeValueAsString(AlgorithmResponse("hello world"))
+        val expectedResponse = jacksonObjectMapper().writeValueAsString(listOf(AlgorithmResponse("hello world"), AlgorithmResponse("palindrome", isSolved = false)))
         mockMvc
                 .perform(get("/algorithms"))
                 .andExpect(status().is2xxSuccessful)

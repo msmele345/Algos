@@ -2,8 +2,10 @@ package com.algos.mitch.algorithms
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert.assertEquals
+import org.junit.Ignore
 import org.junit.Test
 
+@Ignore
 class CodeWarsChallengeTest {
 
     fun testing(actual: String, expected: String) = assertEquals(expected, actual)

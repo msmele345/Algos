@@ -52,7 +52,7 @@ class PrimeFactorTest {
     @Test
     fun `should add prime factors of 18 to a list`() {
         subject.factorsOf(18).let {
-            assertThat(it).isEqualTo(listOf(2,3))
+            assertThat(it).isEqualTo(listOf(2,3,3))
         }
     }
 
