@@ -22,7 +22,7 @@ class AlgorithmController(
 
 
     @RequestMapping("/algorithms/{name}")
-    fun getAlgoritmByName(
+    fun getAlgorithmByName(
             @PathVariable name: String
     ): ResponseEntity<*> {
         val response = algoService.findAlgorithmByName(name)
@@ -33,5 +33,3 @@ class AlgorithmController(
     }
 }
 
-//controller calls the service
-//returns the response of the result from the service
