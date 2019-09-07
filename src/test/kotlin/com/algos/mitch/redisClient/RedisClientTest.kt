@@ -2,17 +2,19 @@ package com.algos.mitch.redisClient
 
 import com.algos.mitch.algorithms.AlgorithmResponse
 import com.algos.mitch.redis.CacheRepository
+import com.algos.mitch.test_helpers.UnitTest
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.junit.experimental.categories.Category
 import java.util.*
 
+@Category(UnitTest::class)
 class RedisClientTest {
 
     val mockRepo: CacheRepository = mock()
 
     val subject = RedisClient(mockRepo)
-
 
     @Test
     fun `findAllAlgos - should call the repository findAll`() {
@@ -20,9 +22,7 @@ class RedisClientTest {
         subject.findAllAlgos()
 
         verify(mockRepo, times(1)).findAll()
-
     }
-
 
     @Test
     fun `findAllAlgos - should return all algos in the cache`() {
@@ -43,11 +43,9 @@ class RedisClientTest {
 
         val actual = subject.findAllAlgos()
 
-
         assertThat(actual).containsExactlyInAnyOrderElementsOf(expected)
 
     }
-
 
     @Test
     fun `findAlgoByName - should invoke the repository method findById with the name of the algorithm`() {
@@ -72,10 +70,7 @@ class RedisClientTest {
 
         val actual = subject.findAlgoByName("palindrome")
 
-        assertThat(actual.isPresent).isTrue()
         assertThat(actual).isEqualTo(Optional.of(expected))
-
-
     }
 
 

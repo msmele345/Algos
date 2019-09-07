@@ -1,0 +1,4 @@
+spring:
+  redis:
+    host: redis-1.vnet
+    port: 6379

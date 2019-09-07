@@ -1,4 +1,4 @@
-package com.algos.mitch.helpers
+package com.algos.mitch.test_helpers
 
 interface UnitTest
 interface FeatureTest

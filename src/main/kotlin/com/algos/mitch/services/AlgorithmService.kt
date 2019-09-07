@@ -12,35 +12,17 @@ class AlgorithmService(
 ) {
 
     @ResponseBody
-    fun processAllAlgorithms(): List<AlgorithmResponse> {
-        return algoMap.map { it.value }
+    fun processAllAlgorithms(): Iterable<AlgorithmResponse> {
+        return redisClient.findAllAlgos()
 
     }
 
-    fun findAlgorithmByName(name: String): AlgorithmResponse? {
-        return algoMap[name]
-    }
-
-    fun findAlgorithmByName2(id: String): AlgorithmResponse? {
-        return redisClient.findAlgoByName(id).let { response ->
+    fun findAlgorithmByName(nameId: String): AlgorithmResponse? {
+        return redisClient.findAlgoByName(nameId).let { response ->
             when {
-                //handle is empty and throw errors if null
-                //setup db
-                //revisit tymeleaf
-                //postgres image?
                 response.isPresent -> response.get()
                 else -> null
             }
         }
-    }
-
-
-    companion object {
-        val algoMap = mapOf(
-            "hello world" to AlgorithmResponse("hello world", codeSnippet = """
-                    fun helloWorld(): = "Hello World!"
-                """.trimIndent(), isSolved = false),
-            "palindrome" to AlgorithmResponse("palindrome", isSolved = false)
-        )
     }
 }

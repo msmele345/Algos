@@ -1,4 +1,4 @@
-package com.algos.mitch.helpers
+package com.algos.mitch.result
 
 sealed class Result<out SuccessType, out FailureType>
 
