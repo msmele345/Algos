@@ -1,2 +1,18 @@
 version: "3.2"
 
+services:
+  redis-1:
+    container_name: redis-1
+    hostname: redis-1.vnet
+    build:
+      dockerfile: Dockerfile
+      context: ./  # path to dockerfile
+    image: 'redis' #what to tag the image with
+    ports:
+      - "6379:6379"
+
+
+networks:
+  default:
+    external:
+      name: vnet

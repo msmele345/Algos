@@ -10,14 +10,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import redis.embedded.RedisServer
 
 @Ignore
 @RunWith(SpringJUnit4ClassRunner::class)
-@SpringBootTest(classes = [TestConfiguration::class])
-@EnableRedisRepositories(basePackages = ["com.algos.mitch.*"])
+@SpringBootTest(classes = [RedisIntegrationTest.TestConfig::class])
 class RedisIntegrationTest {
 
 
@@ -25,19 +25,14 @@ class RedisIntegrationTest {
     @Autowired
     private lateinit var cacheCache: CacheRepository
 
-    @Autowired
-    private lateinit var redisServer: RedisServer
-
 
     @Before
     fun setUp() {
-        redisServer = RedisServer(6379)
-        redisServer.start()
+
     }
 
     @After
     fun cleanUp() {
-        redisServer.stop()
     }
 
 
@@ -49,5 +44,12 @@ class RedisIntegrationTest {
 
 
     }
+
+
+
+
+    @EnableRedisRepositories(basePackages = ["com.algos.mitch.*"])
+    @Configuration
+    class TestConfig
 
 }

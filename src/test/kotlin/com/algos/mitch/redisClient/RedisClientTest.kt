@@ -2,12 +2,10 @@ package com.algos.mitch.redisClient
 
 import com.algos.mitch.algorithms.AlgorithmResponse
 import com.algos.mitch.redis.CacheRepository
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.times
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import java.util.*
 
 class RedisClientTest {
 
@@ -47,6 +45,36 @@ class RedisClientTest {
 
 
         assertThat(actual).containsExactlyInAnyOrderElementsOf(expected)
+
+    }
+
+
+    @Test
+    fun `findAlgoByName - should invoke the repository method findById with the name of the algorithm`() {
+
+        val algoNameId = "hello world"
+
+        subject.findAlgoByName(algoNameId)
+
+        val captor = argumentCaptor<String>()
+
+        verify(mockRepo).findById(captor.capture())
+
+        assertThat(captor.firstValue).isEqualTo(algoNameId)
+    }
+
+    @Test
+    fun `findAlgoByName - should return the correct algorithm response given a valid name currently in the cache` (){
+
+        val expected = generateAlgorithm("palindrome")
+
+        whenever(mockRepo.findById(any())) doReturn Optional.of(generateAlgorithm("palindrome"))
+
+        val actual = subject.findAlgoByName("palindrome")
+
+        assertThat(actual.isPresent).isTrue()
+        assertThat(actual).isEqualTo(Optional.of(expected))
+
 
     }
 
