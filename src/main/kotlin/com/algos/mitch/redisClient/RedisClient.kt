@@ -8,6 +8,7 @@ import java.util.*
 
 @Service
 class RedisClient(
+    //need error handler
         private val cacheRepository: CacheRepository
 ) {
 
@@ -17,6 +18,10 @@ class RedisClient(
 
     fun findAlgoByName(nameId: String) : Optional<AlgorithmResponse> {
         return cacheRepository.findById(nameId)
+    }
+
+    fun putAlgorithm(newAlgorithm: AlgorithmResponse) : AlgorithmResponse {
+        return cacheRepository.save(newAlgorithm)
     }
 
 

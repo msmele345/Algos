@@ -3,9 +3,7 @@ package com.algos.mitch.controller
 import com.algos.mitch.services.AlgorithmService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 @RestController
@@ -13,7 +11,7 @@ class AlgorithmController(
         private val algoService: AlgorithmService
 ) {
 
-    @RequestMapping("/algorithms")
+    @RequestMapping("/algorithms/all")
     fun getAllAlgorithms(): ResponseEntity<*> {
         return algoService.processAllAlgorithms().let { response ->
             ResponseEntity.ok(response)

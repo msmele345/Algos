@@ -11,7 +11,6 @@ class AlgorithmService(
     private val redisClient: RedisClient
 ) {
 
-    @ResponseBody
     fun processAllAlgorithms(): Iterable<AlgorithmResponse> {
         return redisClient.findAllAlgos()
 

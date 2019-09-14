@@ -38,7 +38,7 @@ class RedisIntegrationTest {
 
     @After
     fun cleanUp() {
-        redisCache.deleteAll()
+//        redisCache.deleteAll()
     }
 
 
@@ -49,8 +49,8 @@ class RedisIntegrationTest {
         val actual = redisCache.findAll()
 
         assertThat(actual).hasSize(2)
-        assertThat(actual.first().name).isEqualTo("reverseString")
-        assertThat(actual.last().name).isEqualTo("palindrome")
+        assertThat(actual.last().name).isEqualTo("reverseString")
+        assertThat(actual.first().name).isEqualTo("palindrome")
 
 
     }

@@ -5,9 +5,11 @@ import com.algos.mitch.services.AlgorithmService
 import com.algos.mitch.test_helpers.UnitTest
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.nhaarman.mockito_kotlin.*
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.experimental.categories.Category
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -31,7 +33,7 @@ class AlgorithmControllerTest {
 
         val expectedResponse = jacksonObjectMapper().writeValueAsString(listOf(AlgorithmResponse("hello world"), AlgorithmResponse("palindrome", isSolved = false)))
         mockMvc
-                .perform(get("/algorithms"))
+                .perform(get("/algorithms/all"))
                 .andExpect(status().is2xxSuccessful)
                 .andExpect(content().string(expectedResponse))
 
@@ -71,6 +73,4 @@ class AlgorithmControllerTest {
         verify(mockService, times(1)).findAlgorithmByName(any())
 
     }
-
-
 }

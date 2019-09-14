@@ -5,8 +5,10 @@ import com.algos.mitch.redis.CacheRepository
 import com.algos.mitch.test_helpers.UnitTest
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.experimental.categories.Category
+import java.lang.RuntimeException
 import java.util.*
 
 @Category(UnitTest::class)
@@ -71,6 +73,31 @@ class RedisClientTest {
         val actual = subject.findAlgoByName("palindrome")
 
         assertThat(actual).isEqualTo(Optional.of(expected))
+    }
+
+    @Test
+    fun `putAlgorithm - should invoke the repository method save with the given algorithm`() {
+        val inputNewAlgorithm = generateAlgorithm("newReversedString")
+
+        whenever(mockRepo.save(any<AlgorithmResponse>())) doReturn inputNewAlgorithm
+
+        subject.putAlgorithm(inputNewAlgorithm)
+
+        val captor = argumentCaptor<AlgorithmResponse>()
+
+        verify(mockRepo, times(1)).save(captor.capture())
+
+        assertThat(captor.firstValue).isEqualTo(inputNewAlgorithm)
+    }
+
+    //TODO Add negative tests after ServiceErrors are implemented
+    @Ignore
+    @Test
+    fun `putAlgorithm - should return a service error if there is a runtime exception when attempting to write`() {
+        val inputNewAlgorithm = generateAlgorithm("newReversedString")
+
+        whenever(mockRepo.save(any<AlgorithmResponse>())) doThrow RuntimeException()
+
     }
 
 

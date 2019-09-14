@@ -20,7 +20,7 @@ class ResultTest {
     @Test
     fun `mapSuccess - should transform nothing if result is a Failure`() {
         val expected = Failure(1)
-        
+
         val actual = Failure(1).mapSuccess { toString() }
 
         assertThat(actual).isEqualTo(expected)
