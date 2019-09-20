@@ -49,8 +49,10 @@ class RedisIntegrationTest {
         val actual = redisCache.findAll()
 
         assertThat(actual).hasSize(2)
-        assertThat(actual.last().name).isEqualTo("reverseString")
-        assertThat(actual.first().name).isEqualTo("palindrome")
+        assertThat(actual).containsExactlyInAnyOrderElementsOf(listOf(
+            AlgorithmResponse("reverseString"),
+            AlgorithmResponse("palindrome")
+        ))
 
 
     }

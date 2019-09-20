@@ -1,11 +1,12 @@
 package com.algos.mitch.redisClient
 
 import com.algos.mitch.algorithms.AlgorithmResponse
+import com.algos.mitch.redis.AlgorithmDbFaultResolver
 import com.algos.mitch.redis.CacheRepository
+import com.algos.mitch.result.*
 import com.algos.mitch.test_helpers.UnitTest
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.experimental.categories.Category
 import java.lang.RuntimeException
@@ -16,7 +17,9 @@ class RedisClientTest {
 
     val mockRepo: CacheRepository = mock()
 
-    val subject = RedisClient(mockRepo)
+    val mockAlgoDbFaultResolver: AlgorithmDbFaultResolver<AlgorithmResponse> = mock()
+
+    val subject = RedisClient(mockAlgoDbFaultResolver, mockRepo)
 
     @Test
     fun `findAllAlgos - should call the repository findAll`() {
@@ -41,7 +44,7 @@ class RedisClientTest {
                 generateAlgorithm("palindrome")
         )
 
-        val subject = RedisClient(mockCache)
+        val subject = RedisClient(mockAlgoDbFaultResolver, mockCache)
 
         val actual = subject.findAllAlgos()
 
@@ -50,17 +53,16 @@ class RedisClientTest {
     }
 
     @Test
-    fun `findAlgoByName - should invoke the repository method findById with the name of the algorithm`() {
+    fun `findAlgoByName - should invoke the fault resolver when called`() {
 
         val algoNameId = "hello world"
 
         subject.findAlgoByName(algoNameId)
 
-        val captor = argumentCaptor<String>()
+        argumentCaptor<() -> Optional<AlgorithmResponse>>().let { captor ->
+            verify(mockAlgoDbFaultResolver).invoke(captor.capture())
+        }
 
-        verify(mockRepo).findById(captor.capture())
-
-        assertThat(captor.firstValue).isEqualTo(algoNameId)
     }
 
     @Test
@@ -68,11 +70,23 @@ class RedisClientTest {
 
         val expected = generateAlgorithm("palindrome")
 
-        whenever(mockRepo.findById(any())) doReturn Optional.of(generateAlgorithm("palindrome"))
+        val mockFaultResolver = mock<AlgorithmDbFaultResolver<AlgorithmResponse>> {
+            on { invoke { any() } }.thenAnswer { answer ->
+                val function  = answer.getArgument<() -> Any>(0)
+                return@thenAnswer Success(function())
+            }
+        }
 
+        val mockRedis: CacheRepository = mock{
+            on { findById(any()) } doReturn Optional.of(expected)
+        }
+        val subject = RedisClient(mockFaultResolver, mockRedis)
         val actual = subject.findAlgoByName("palindrome")
 
-        assertThat(actual).isEqualTo(Optional.of(expected))
+        val captor = argumentCaptor<() -> Optional<AlgorithmResponse>>()
+
+        verify(mockFaultResolver).invoke(captor.capture())
+        assertThat(captor.firstValue).isPresent
     }
 
     @Test
@@ -81,23 +95,30 @@ class RedisClientTest {
 
         whenever(mockRepo.save(any<AlgorithmResponse>())) doReturn inputNewAlgorithm
 
-        subject.putAlgorithm(inputNewAlgorithm)
+       val actual = subject.putAlgorithm(inputNewAlgorithm)
 
         val captor = argumentCaptor<AlgorithmResponse>()
 
         verify(mockRepo, times(1)).save(captor.capture())
 
         assertThat(captor.firstValue).isEqualTo(inputNewAlgorithm)
+        assertThat(actual).isEqualTo(Success(inputNewAlgorithm))
     }
 
-    //TODO Add negative tests after ServiceErrors are implemented
-    @Ignore
     @Test
     fun `putAlgorithm - should return a service error if there is a runtime exception when attempting to write`() {
         val inputNewAlgorithm = generateAlgorithm("newReversedString")
 
-        whenever(mockRepo.save(any<AlgorithmResponse>())) doThrow RuntimeException()
+        whenever(mockRepo.save(any<AlgorithmResponse>())) doThrow RuntimeException("some exception")
 
+        val expected = Failure(serviceErrorOf(ServiceError(
+            service = ServiceName.REDIS,
+            errorMessage = "some exception"
+        )))
+
+        val actual = subject.putAlgorithm(inputNewAlgorithm)
+
+        assertThat(actual).isEqualTo(expected)
     }
 
 
@@ -110,6 +131,13 @@ class RedisClientTest {
     ): AlgorithmResponse {
         return AlgorithmResponse(name, codeSnippet, categories, isSolved)
     }
+
+    /*
+     * An invocation on a mock.
+     * A placeholder for mock, the method that was called and the arguments that were passed.
+     * Returns casted argument at the given index.
+     * Can lookup in expanded arguments form {@link #getArguments()}.
+* */
 
 
 }
