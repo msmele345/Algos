@@ -9,6 +9,8 @@ import com.nhaarman.mockito_kotlin.*
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.experimental.categories.Category
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
@@ -24,8 +26,8 @@ class AlgorithmControllerTest {
     val subject = AlgorithmController(mockService)
 
     val mockMvc = MockMvcBuilders
-            .standaloneSetup(subject)
-            .build()
+        .standaloneSetup(subject)
+        .build()
 
     @Test
     fun `getAllAlgorithms - should invoke the algo service`() {
@@ -34,42 +36,44 @@ class AlgorithmControllerTest {
 
         val expectedResponse = jacksonObjectMapper().writeValueAsString(listOf(AlgorithmResponse("hello world"), AlgorithmResponse("palindrome", isSolved = false)))
         mockMvc
-                .perform(get("/algorithms/all"))
-                .andExpect(status().is2xxSuccessful)
-                .andExpect(content().string(expectedResponse))
+            .perform(get("/algorithms/all"))
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(content().string(expectedResponse))
 
 
         verify(mockService, times(1)).processAllAlgorithms()
 
     }
 
-//    @Test
-//    fun `getAlgorithmByName - should invoke the algo service and pass the providedName`() {
-//
-//        whenever(mockService.findAlgorithmByName("palindrome")) doReturn Success(AlgorithmResponse("palindrome"))
-//
-//        val expectedResponse = jacksonObjectMapper().writeValueAsString(AlgorithmResponse("palindrome"))
-//
-//        mockMvc
-//                .perform(get("/algorithms/palindrome"))
-//                .andExpect(status().is2xxSuccessful)
-//                .andExpect(content().string(expectedResponse))
-//
-//        verify(mockService, times(1)).findAlgorithmByName(any())
-//
-//    }
+    @Test
+    fun `getAlgorithmByName - should invoke the algo service and pass the providedName`() {
+        val expectedAlgorithmResponse = AlgorithmResponse("palindrome")
+
+        whenever(mockService.findAlgorithmByName("palindrome")) doReturn ResponseEntity.ok(expectedAlgorithmResponse)
+
+        val expectedResponse = jacksonObjectMapper().writeValueAsString(expectedAlgorithmResponse)
+
+        mockMvc
+            .perform(get("/algorithms/palindrome"))
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(content().string(expectedResponse))
+
+        verify(mockService, times(1)).findAlgorithmByName(any())
+
+    }
 
     @Test
     fun `getAlgorithmByName - should return 404 NOT_FOUND if algo service returns null`() {
 
-        whenever(mockService.findAlgorithmByName("palindrome")).thenReturn(null)
+        whenever(mockService.findAlgorithmByName("bacon"))
+            .thenReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Algorithm Not Found"))
 
-        val expectedResponse = "Algorithm Not Currently Supported"
+        val expectedResponse = "Algorithm Not Found"
 
         mockMvc
-                .perform(get("/algorithms/bacon"))
-                .andExpect(status().is4xxClientError)
-                .andExpect(content().string(expectedResponse))
+            .perform(get("/algorithms/bacon"))
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(expectedResponse))
 
         verify(mockService, times(1)).findAlgorithmByName(any())
 

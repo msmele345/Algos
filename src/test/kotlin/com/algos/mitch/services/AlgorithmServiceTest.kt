@@ -62,6 +62,7 @@ class AlgorithmServiceTest {
 
         whenever(mockRedisClient.findAlgoByName(any())) doReturn Success(expected)
 
+
         subject.findAlgorithmByName("palindrome").let {result ->
             assertThat(result.statusCode).isEqualTo(HttpStatus.OK)
             assertThat(result.body).isEqualTo(expected)

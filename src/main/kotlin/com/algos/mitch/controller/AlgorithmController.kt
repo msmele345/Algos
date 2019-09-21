@@ -25,11 +25,6 @@ class AlgorithmController(
     @RequestMapping("/algorithms/{name}")
     fun getAlgorithmByName(
             @PathVariable name: String
-    ): ResponseEntity<*> {
-            val response = algoService.findAlgorithmByName(name)
-            return ResponseEntity.ok(response)
-
-//       return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("")
-    }
+    ): ResponseEntity<*> = algoService.findAlgorithmByName(name)
 }
 
