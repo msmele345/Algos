@@ -1,7 +1,8 @@
 package com.algos.mitch.services
 
 import com.algos.mitch.algo_store.AlgorithmErrorMapper
-import com.algos.mitch.algorithms.AlgorithmResponse
+import com.algos.mitch.algo_store.AlgorithmRequest
+import com.algos.mitch.algo_store.AlgorithmResponse
 import com.algos.mitch.result.Success
 import com.algos.mitch.test_helpers.UnitTest
 import com.nhaarman.mockito_kotlin.*
@@ -13,9 +14,9 @@ import org.springframework.http.HttpStatus
 @Category(UnitTest::class)
 class AlgorithmServiceTest {
 
-    val mockRedisClient: com.algos.mitch.redisClient.RedisClient = mock()
+    private val mockRedisClient: com.algos.mitch.redisClient.RedisClient = mock()
 
-    val mockErrorMapper: AlgorithmErrorMapper = mock()
+    private val mockErrorMapper: AlgorithmErrorMapper = mock()
 
     val subject = AlgorithmService(mockRedisClient, mockErrorMapper)
 
@@ -24,8 +25,7 @@ class AlgorithmServiceTest {
         val expected = listOf(
             AlgorithmResponse("hello world", codeSnippet = """
                     fun helloWorld(): = "Hello World!"
-                """.trimIndent()
-                , isSolved = false
+                """.trimIndent(), isSolved = false
             ),
             AlgorithmResponse("palindrome", isSolved = false)
         )
@@ -39,21 +39,22 @@ class AlgorithmServiceTest {
     }
     @Test
     fun `findAlgorithmByName - should return a ResponseEntity of 404_NOT_FOUND when the redisClient returns a success of null`() {
+        val inputBadRequest = AlgorithmRequest(nameId = "bacon")
 
         whenever(mockRedisClient.findAlgoByName(any())) doReturn Success(null)
 
-        subject.findAlgorithmByName("bacon").let { result ->
+        subject.findAlgorithmByName(inputBadRequest).let { result ->
             assertThat(result.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
         }
-
     }
 
     @Test
     fun `findAlgorithmByName - should return a ResponseEntity of 200 Success when the redisClient returns a success `() {
 
+        val inputAlgorithmRequest = AlgorithmRequest(nameId = "palindrome")
+
         val expected = AlgorithmResponse(
             name = "palindrome",
-            categories = listOf(),
             codeSnippet = """
 
                 """.trimIndent(),
@@ -63,7 +64,7 @@ class AlgorithmServiceTest {
         whenever(mockRedisClient.findAlgoByName(any())) doReturn Success(expected)
 
 
-        subject.findAlgorithmByName("palindrome").let {result ->
+        subject.findAlgorithmByName(inputAlgorithmRequest).let {result ->
             assertThat(result.statusCode).isEqualTo(HttpStatus.OK)
             assertThat(result.body).isEqualTo(expected)
         }

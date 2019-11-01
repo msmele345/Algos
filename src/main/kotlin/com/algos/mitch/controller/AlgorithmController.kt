@@ -1,10 +1,7 @@
 package com.algos.mitch.controller
 
-import com.algos.mitch.result.flatMap
-import com.algos.mitch.result.mapFailure
-import com.algos.mitch.result.mapSuccess
+import com.algos.mitch.algo_store.AlgorithmRequest
 import com.algos.mitch.services.AlgorithmService
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -25,6 +22,9 @@ class AlgorithmController(
     @RequestMapping("/algorithms/{name}")
     fun getAlgorithmByName(
             @PathVariable name: String
-    ): ResponseEntity<*> = algoService.findAlgorithmByName(name)
+    ): ResponseEntity<*> {
+        val request = AlgorithmRequest(nameId = name)
+        return algoService.findAlgorithmByName(request)
+    }
 }
 

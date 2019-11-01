@@ -1,18 +1,16 @@
 package com.algos.mitch.controller
 
-import com.algos.mitch.algorithms.AlgorithmResponse
-import com.algos.mitch.result.Success
+import com.algos.mitch.algo_store.AlgorithmRequest
+import com.algos.mitch.algo_store.AlgorithmResponse
 import com.algos.mitch.services.AlgorithmService
 import com.algos.mitch.test_helpers.UnitTest
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.nhaarman.mockito_kotlin.*
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.experimental.categories.Category
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -42,14 +40,16 @@ class AlgorithmControllerTest {
 
 
         verify(mockService, times(1)).processAllAlgorithms()
-
     }
 
     @Test
     fun `getAlgorithmByName - should invoke the algo service and pass the providedName`() {
+
+        val inputAlgorithmRequest = AlgorithmRequest(nameId = "palindrome")
+
         val expectedAlgorithmResponse = AlgorithmResponse("palindrome")
 
-        whenever(mockService.findAlgorithmByName("palindrome")) doReturn ResponseEntity.ok(expectedAlgorithmResponse)
+        whenever(mockService.findAlgorithmByName(inputAlgorithmRequest)) doReturn ResponseEntity.ok(expectedAlgorithmResponse)
 
         val expectedResponse = jacksonObjectMapper().writeValueAsString(expectedAlgorithmResponse)
 
@@ -59,13 +59,14 @@ class AlgorithmControllerTest {
             .andExpect(content().string(expectedResponse))
 
         verify(mockService, times(1)).findAlgorithmByName(any())
-
     }
 
     @Test
     fun `getAlgorithmByName - should return 404 NOT_FOUND if algo service returns null`() {
 
-        whenever(mockService.findAlgorithmByName("bacon"))
+        val inputBadRequest = AlgorithmRequest(nameId = "bacon")
+
+        whenever(mockService.findAlgorithmByName(inputBadRequest))
             .thenReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Algorithm Not Found"))
 
         val expectedResponse = "Algorithm Not Found"
@@ -76,6 +77,5 @@ class AlgorithmControllerTest {
             .andExpect(content().string(expectedResponse))
 
         verify(mockService, times(1)).findAlgorithmByName(any())
-
     }
 }

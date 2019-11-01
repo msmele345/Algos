@@ -1,6 +1,6 @@
 package com.algos.mitch.redis
 
-import com.algos.mitch.algorithms.AlgorithmResponse
+import com.algos.mitch.algo_store.AlgorithmResponse
 import com.algos.mitch.result.*
 import com.algos.mitch.test_helpers.UnitTest
 import com.nhaarman.mockito_kotlin.*

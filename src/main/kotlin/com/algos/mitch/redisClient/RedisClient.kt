@@ -1,13 +1,17 @@
 package com.algos.mitch.redisClient
 
-import com.algos.mitch.algorithms.AlgorithmResponse
+import com.algos.mitch.algo_store.AlgorithmResponse
 import com.algos.mitch.redis.AlgorithmDbFaultResolver
 import com.algos.mitch.redis.CacheRepository
 import com.algos.mitch.result.*
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 
 
 @Service
+@Lazy
+@ComponentScan
 class RedisClient(
     private val redisFaultResolver: AlgorithmDbFaultResolver<AlgorithmResponse>,
     private val cacheRepository: CacheRepository

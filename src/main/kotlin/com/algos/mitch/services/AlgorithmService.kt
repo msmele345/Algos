@@ -1,7 +1,8 @@
 package com.algos.mitch.services
 
 import com.algos.mitch.algo_store.AlgorithmErrorMapper
-import com.algos.mitch.algorithms.AlgorithmResponse
+import com.algos.mitch.algo_store.AlgorithmRequest
+import com.algos.mitch.algo_store.AlgorithmResponse
 import com.algos.mitch.redisClient.RedisClient
 import com.algos.mitch.result.*
 import org.springframework.http.HttpStatus
@@ -20,8 +21,8 @@ class AlgorithmService(
 
     }
 
-    fun findAlgorithmByName(nameId: String): ResponseEntity<*> {
-        return redisClient.findAlgoByName(nameId)
+    fun findAlgorithmByName(algorithmRequest: AlgorithmRequest): ResponseEntity<*> {
+        return redisClient.findAlgoByName(algorithmRequest.nameId)
             .mapSuccess { algorithmResponse: AlgorithmResponse? ->
 
                 algorithmResponse?.let { validAlgorithmResponse ->

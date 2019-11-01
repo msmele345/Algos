@@ -1,6 +1,7 @@
 package com.algos.mitch.redisClient
 
-import com.algos.mitch.algorithms.AlgorithmResponse
+import com.algos.mitch.algo_store.AlgorithmResponse
+import com.algos.mitch.algo_store.Tag
 import com.algos.mitch.redis.AlgorithmDbFaultResolver
 import com.algos.mitch.redis.CacheRepository
 import com.algos.mitch.result.*
@@ -9,6 +10,7 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.experimental.categories.Category
+import result_test.succeedsAnd
 import java.lang.RuntimeException
 import java.util.*
 
@@ -34,14 +36,14 @@ class RedisClientTest {
 
         val mockCache: CacheRepository = mock {
             on { findAll() } doReturn listOf(
-                    generateAlgorithm(),
-                    generateAlgorithm("palindrome")
+                generateAlgorithm(),
+                generateAlgorithm("palindrome")
             )
         }
 
         val expected = listOf(
-                generateAlgorithm(),
-                generateAlgorithm("palindrome")
+            generateAlgorithm(),
+            generateAlgorithm("palindrome")
         )
 
         val subject = RedisClient(mockAlgoDbFaultResolver, mockCache)
@@ -66,18 +68,18 @@ class RedisClientTest {
     }
 
     @Test
-    fun `findAlgoByName - should return the correct algorithm response given a valid name currently in the cache` (){
+    fun `findAlgoByName - should return the correct algorithm response given a valid name currently in the cache`() {
 
         val expected = generateAlgorithm("palindrome")
 
         val mockFaultResolver = mock<AlgorithmDbFaultResolver<AlgorithmResponse>> {
             on { invoke { any() } }.thenAnswer { answer ->
-                val function  = answer.getArgument<() -> Any>(0)
+                val function = answer.getArgument<() -> Any>(0)
                 return@thenAnswer Success(function())
             }
         }
 
-        val mockRedis: CacheRepository = mock{
+        val mockRedis: CacheRepository = mock {
             on { findById(any()) } doReturn Optional.of(expected)
         }
         val subject = RedisClient(mockFaultResolver, mockRedis)
@@ -89,13 +91,40 @@ class RedisClientTest {
         assertThat(captor.firstValue).isPresent
     }
 
+
+    @Test
+    fun `findAlgoByName - should return the correct algorithm response with categories and labels from the repo`() {
+        val expected = generateAlgorithm(name = "array counter", category = com.algos.mitch.algo_store.Category(
+            "easy",
+            difficultlyLevel = 2,
+            tags = listOf(Tag("arrays"))
+        ))
+
+        //repo returns the optional
+        val mockRedis: CacheRepository = mock {
+            on { findById(any()) } doReturn Optional.of(expected)
+        }
+
+        //fault resolver returns the success
+        val mockFaultResolver = mock<AlgorithmDbFaultResolver<AlgorithmResponse>> {
+            on { invoke { any() } } doReturn Success(expected)
+        }
+
+        val subject = RedisClient(mockFaultResolver, mockRedis)
+
+        subject.findAlgoByName("array counter").succeedsAnd { actual ->
+            assertThat(actual).isEqualTo(expected)
+        }
+
+    }
+
     @Test
     fun `putAlgorithm - should invoke the repository method save with the given algorithm`() {
         val inputNewAlgorithm = generateAlgorithm("newReversedString")
 
         whenever(mockRepo.save(any<AlgorithmResponse>())) doReturn inputNewAlgorithm
 
-       val actual = subject.putAlgorithm(inputNewAlgorithm)
+        val actual = subject.putAlgorithm(inputNewAlgorithm)
 
         val captor = argumentCaptor<AlgorithmResponse>()
 
@@ -123,13 +152,17 @@ class RedisClientTest {
 
 
     private fun generateAlgorithm(
-            name: String = "hello world",
-            categories: List<String> = listOf("easy"),
-            codeSnippet: String = "",
-            isSolved: Boolean = false
+        name: String = "hello world",
+        category: com.algos.mitch.algo_store.Category = com.algos.mitch.algo_store.Category(
+            categoryName = "HARD",
+            difficultlyLevel = 3,
+            tags = listOf(Tag("string formatting"))
+        ),
+        codeSnippet: String = "",
+        isSolved: Boolean = false
 
     ): AlgorithmResponse {
-        return AlgorithmResponse(name, codeSnippet, categories, isSolved)
+        return AlgorithmResponse(name, codeSnippet, category, isSolved)
     }
 
     /*

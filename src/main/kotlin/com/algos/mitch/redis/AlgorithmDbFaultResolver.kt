@@ -18,14 +18,3 @@ class AlgorithmDbFaultResolver<type> : FaultResolver<type?, ServiceErrors> {
         }
     }
 }
-
-
-//refactor
-//implemenet is Redis client
-//pivot to rabbmit
-
-//return when(response.isPresent) {
-//    true -> Success(response.get())
-//    else -> Success(null)
-//}
-//       return if (response.isPresent) Success(response.get()) else Success(null)

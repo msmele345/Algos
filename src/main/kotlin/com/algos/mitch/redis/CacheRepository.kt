@@ -1,6 +1,6 @@
 package com.algos.mitch.redis
 
-import com.algos.mitch.algorithms.AlgorithmResponse
+import com.algos.mitch.algo_store.AlgorithmResponse
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
