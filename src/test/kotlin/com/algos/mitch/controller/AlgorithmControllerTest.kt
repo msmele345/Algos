@@ -2,6 +2,8 @@ package com.algos.mitch.controller
 
 import com.algos.mitch.algo_store.AlgorithmRequest
 import com.algos.mitch.algo_store.AlgorithmResponse
+import com.algos.mitch.algo_store.AlgorithmResponses
+import com.algos.mitch.algo_store.AlgorithmSummaryResponse
 import com.algos.mitch.services.AlgorithmService
 import com.algos.mitch.test_helpers.UnitTest
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -30,13 +32,34 @@ class AlgorithmControllerTest {
     @Test
     fun `getAllAlgorithms - should invoke the algo service`() {
 
-        whenever(mockService.processAllAlgorithms()) doReturn listOf(AlgorithmResponse("hello world"), AlgorithmResponse("palindrome", isSolved = false))
+        val expectedResponses = AlgorithmResponses(listOf(AlgorithmSummaryResponse(
+            name = "countDupes",
+            codeSnippet = """
+            fun countDupes(arr: Array<Int>): Int = arr.size - arr.distinct(),
+        """.trimIndent(),
+            categoryDescription = "EASY",
+            difficultyLevel = 2,
+            categoryTags = listOf("Tag: Collections", "Tag: Data Processing")
+        ), AlgorithmSummaryResponse(
+            name = "popLast",
+            codeSnippet = """
+            fun popLast(arr: Array<Int>): Int = arr.dropLast(1)
+        """.trimIndent(),
+            categoryDescription = "EASY",
+            difficultyLevel = 1,
+            categoryTags = listOf("Tag: Collections", "Tag: Data Processing")
+        )
 
-        val expectedResponse = jacksonObjectMapper().writeValueAsString(listOf(AlgorithmResponse("hello world"), AlgorithmResponse("palindrome", isSolved = false)))
+        ))
+
+        val result = ResponseEntity.status(HttpStatus.OK).body(expectedResponses)
+        whenever(mockService.processAllAlgorithms()) doReturn result
+
+        val expectedResult = jacksonObjectMapper().run { writeValueAsString(result) }
         mockMvc
             .perform(get("/algorithms/all"))
             .andExpect(status().is2xxSuccessful)
-            .andExpect(content().string(expectedResponse))
+            .andExpect(content().string(expectedResult))
 
 
         verify(mockService, times(1)).processAllAlgorithms()
@@ -47,11 +70,11 @@ class AlgorithmControllerTest {
 
         val inputAlgorithmRequest = AlgorithmRequest(nameId = "palindrome")
 
-        val expectedAlgorithmResponse = AlgorithmResponse("palindrome")
+        val expectedAlgorithmResponse = AlgorithmSummaryResponse("palindrome")
 
         whenever(mockService.findAlgorithmByName(inputAlgorithmRequest)) doReturn ResponseEntity.ok(expectedAlgorithmResponse)
 
-        val expectedResponse = jacksonObjectMapper().writeValueAsString(expectedAlgorithmResponse)
+        val expectedResponse = jacksonObjectMapper().run { writeValueAsString(expectedAlgorithmResponse) }
 
         mockMvc
             .perform(get("/algorithms/palindrome"))
@@ -66,8 +89,7 @@ class AlgorithmControllerTest {
 
         val inputBadRequest = AlgorithmRequest(nameId = "bacon")
 
-        whenever(mockService.findAlgorithmByName(inputBadRequest))
-            .thenReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Algorithm Not Found"))
+        whenever(mockService.findAlgorithmByName(inputBadRequest)) doReturn ResponseEntity.status(HttpStatus.NOT_FOUND).body("Algorithm Not Found")
 
         val expectedResponse = "Algorithm Not Found"
 

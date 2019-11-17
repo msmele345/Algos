@@ -2,6 +2,7 @@ package com.algos.mitch.redis
 
 import com.algos.mitch.algo_store.AlgorithmResponse
 import com.algos.mitch.result.*
+import com.algos.mitch.services.AlgorithmDbFaultResolver
 import com.algos.mitch.test_helpers.UnitTest
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
@@ -49,7 +50,7 @@ class AlgorithmDbFaultResolverTest {
 
         val fakeDbCall: () -> Optional<AlgorithmResponse> = mock()
 
-        val expected = Failure(serviceErrorOf(ServiceError(service = ServiceName.REDIS, errorMessage = "some exception")))
+        val expected = Failure(serviceErrorOf(ServiceError(service = ServiceName.REDIS, errorMessage = "some exception", keyInError = "")))
 
         whenever(fakeDbCall.invoke()) doThrow RuntimeException("some exception")
 

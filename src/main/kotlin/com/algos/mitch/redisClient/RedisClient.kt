@@ -1,7 +1,7 @@
 package com.algos.mitch.redisClient
 
 import com.algos.mitch.algo_store.AlgorithmResponse
-import com.algos.mitch.redis.AlgorithmDbFaultResolver
+import com.algos.mitch.services.AlgorithmDbFaultResolver
 import com.algos.mitch.redis.CacheRepository
 import com.algos.mitch.result.*
 import org.springframework.context.annotation.ComponentScan
@@ -29,7 +29,7 @@ class RedisClient(
         return try {
             Success(cacheRepository.save(newAlgorithm))
         } catch (ex: Exception) {
-            Failure(serviceErrorOf(ServiceError(service = ServiceName.REDIS, errorMessage = ex.localizedMessage)))
+            Failure(serviceErrorOf(ServiceError(service = ServiceName.REDIS, errorMessage = ex.localizedMessage, keyInError = "")))
         }
     }
 

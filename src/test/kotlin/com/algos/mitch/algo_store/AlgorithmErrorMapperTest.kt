@@ -20,8 +20,9 @@ class AlgorithmErrorMapperTest {
     fun `mapErrors - should map a serviceError with errorType of UNKNOWN to 500 INTERNAL_SERVER_ERROR`() {
         val inputServiceError = serviceErrorOf(ServiceError(
             service = ServiceName.REDIS,
+            errorMessage = "some problem",
             errorType = ErrorType.UNKNOWN_ERROR,
-            errorMessage = "some problem"
+            keyInError = ""
         ))
 
         val actual = subject.mapErrors(inputServiceError)
@@ -35,7 +36,8 @@ class AlgorithmErrorMapperTest {
         val inputServiceError = serviceErrorOf(ServiceError(
             service = ServiceName.REDIS,
             errorMessage = "Algorithm not found",
-            errorType = ErrorType.ALGORITHM_NOT_FOUND
+            errorType = ErrorType.ALGORITHM_NOT_FOUND,
+            keyInError = ""
         ))
 
         subject.mapErrors(inputServiceError).let { actual ->

@@ -13,3 +13,18 @@ interface FaultResolver<SUCCESS, out FAILURE> : ErrorHandler<SUCCESS, FAILURE> {
 interface ErrorMapper<out RESPONSE> {
     fun mapErrors(errors: ServiceErrors): RESPONSE
 }
+
+interface Transformer<in IN_OBJECT, out OUT_OBJECT> {
+    fun transform(from: IN_OBJECT): OUT_OBJECT
+}
+
+
+interface DataBag
+
+interface NullDataBag: DataBag
+
+
+interface AlgorithmClient {
+    fun fetchAlgorithms(): Result<Algorithms, ServiceErrors>
+    fun getAlgorithmByName(keyName: String): Result<AlgorithmDomainModel?, ServiceErrors>
+}
