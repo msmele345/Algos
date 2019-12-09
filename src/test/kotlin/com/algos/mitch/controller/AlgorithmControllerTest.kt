@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 @Category(UnitTest::class)
 class AlgorithmControllerTest {
 
-
     val mockService: AlgorithmService = mock()
 
     val subject = AlgorithmController(mockService)
@@ -55,7 +54,7 @@ class AlgorithmControllerTest {
         val result = ResponseEntity.status(HttpStatus.OK).body(expectedResponses)
         whenever(mockService.processAllAlgorithms()) doReturn result
 
-        val expectedResult = jacksonObjectMapper().run { writeValueAsString(result) }
+        val expectedResult = jacksonObjectMapper().run { writeValueAsString(result.body) }
         mockMvc
             .perform(get("/algorithms/all"))
             .andExpect(status().is2xxSuccessful)

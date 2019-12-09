@@ -21,13 +21,14 @@ class AlgorithmService(
 ) {
 
     fun processAllAlgorithms(): ResponseEntity<*> {
-        return mongoClient.fetchAlgorithms().mapSuccess { algorithms ->
-            domainToBatchResponseTransformer.transform(algorithms).let { summaryResponses ->
-                ResponseEntity.status(HttpStatus.OK).body(summaryResponses)
+        return mongoClient.fetchAlgorithms()
+            .mapSuccess { algorithms ->
+                domainToBatchResponseTransformer.transform(algorithms).let { summaryResponses ->
+                    ResponseEntity.status(HttpStatus.OK).body(summaryResponses)
+                }
+            }.getOrElse { serviceErrors ->
+                errorMapper.mapErrors(serviceErrors)
             }
-        }.getOrElse { serviceErrors ->
-            errorMapper.mapErrors(serviceErrors)
-        }
     }
 
     fun findAlgorithmByName(algorithmRequest: AlgorithmRequest): ResponseEntity<*> {

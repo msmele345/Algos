@@ -14,7 +14,7 @@ class AlgorithmController(
     @RequestMapping("/algorithms/all")
     fun getAllAlgorithms(): ResponseEntity<*> {
         return algoService.processAllAlgorithms().let { response ->
-            ResponseEntity.ok(response)
+            ResponseEntity.ok(response.body ?: "")
         }
     }
 
