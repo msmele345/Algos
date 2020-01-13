@@ -1,20 +1,17 @@
 package com.algos.mitch.services
 
 import com.algos.mitch.algo_store.*
-import com.algos.mitch.result.Success
+import com.algos.mitch.result.*
 import com.algos.mitch.test_helpers.UnitTest
-import com.mongodb.client.MongoClient
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.experimental.categories.Category
 import org.springframework.http.HttpStatus
-import java.util.*
+import org.springframework.http.ResponseEntity
 
 @Category(UnitTest::class)
 class AlgorithmServiceTest {
-
-    private val mockRedisClient: com.algos.mitch.redisClient.RedisClient = mock()
 
     private val mockMongoClient: com.algos.mitch.mongodb.MongoClient = mock()
 
@@ -40,7 +37,7 @@ class AlgorithmServiceTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 2,
-            categoryTags = listOf("Tag: Collections", "Tag: Data Processing")
+            categoryTags = "Tag: Collections, Tag: Data Processing"
         ), AlgorithmSummaryResponse(
             name = "popLast",
             codeSnippet = """
@@ -48,7 +45,7 @@ class AlgorithmServiceTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 1,
-            categoryTags = listOf("Tag: Collections", "Tag: Data Processing")
+            categoryTags = "Tag: Collections, Tag: Data Processing"
         )
 
         ))
@@ -123,18 +120,61 @@ class AlgorithmServiceTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 1,
-            categoryTags = listOf("Tag: Collections", "Tag: Data Processing")
+            categoryTags = "Tag: Collections, Tag: Data Processing"
         )
 
         whenever(mockMongoClient.getAlgorithmByName(any())) doReturn Success(mongoResponse)
 
         whenever(mockResponseTransformer.transform(any())) doReturn expected
 
-
         subject.findAlgorithmByName(inputAlgorithmRequest).let { result ->
             assertThat(result.statusCode).isEqualTo(HttpStatus.OK)
             assertThat(result.body).isEqualTo(expected)
         }
+    }
 
+    @Test
+    fun `addAlgorithm - should invoke the repository create method`() {
+        val newAlgorithmDomainModel = AlgorithmDomainModel(
+            name = "newStringFilter"
+        )
+
+        whenever(mockMongoClient.createAlgorithm(newAlgorithmDomainModel)) doReturn Success(newAlgorithmDomainModel)
+
+        val actual = subject.addAlgorithm(newAlgorithmDomainModel)
+
+        verify(mockMongoClient).createAlgorithm(newAlgorithmDomainModel)
+    }
+
+    @Test
+    fun `addAlgorithm - should return the object inserted upon success`() {
+        val newAlgorithmDomainModel = AlgorithmDomainModel(
+            name = "newStringFilter"
+        )
+        whenever(mockMongoClient.createAlgorithm(newAlgorithmDomainModel)) doReturn Success(newAlgorithmDomainModel)
+
+        val actual = subject.addAlgorithm(newAlgorithmDomainModel)
+
+        assertThat(actual.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(actual.body).isEqualTo(newAlgorithmDomainModel)
+    }
+
+    @Test
+    fun `addAlgorithm - should return a ServiceError if the mongo operation fails`() {
+
+        val expectedErrors = serviceErrorOf(ServiceError(
+            service = ServiceName.MONGO_DB,
+            errorType = ErrorType.PERSISTANCE_ERROR
+        ))
+
+        val newAlgorithm = AlgorithmDomainModel()
+        whenever(mockMongoClient.createAlgorithm(newAlgorithm)) doReturn Failure(expectedErrors)
+        whenever(mockErrorMapper.mapErrors(any())) doReturn ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body("")
+
+        val actual = subject.addAlgorithm(newAlgorithm)
+
+        assertThat(actual.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
     }
 }

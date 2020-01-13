@@ -1,10 +1,9 @@
 package com.algos.mitch.algo_store
 
 import org.springframework.data.annotation.Id
-import org.springframework.data.redis.core.RedisHash
 import java.io.Serializable
 
-@RedisHash("AlgorithmResponse")
+//@RedisHash("AlgorithmResponse")
 data class AlgorithmResponse(
     @Id
     val name: String = "",
@@ -19,5 +18,5 @@ data class AlgorithmSummaryResponse(
     val codeSnippet: String = "",
     val categoryDescription: String = "",
     val difficultyLevel: Int? = null,
-    val categoryTags: List<String> = emptyList()
+    val categoryTags: String = ""
 )

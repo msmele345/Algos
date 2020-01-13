@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus
 @Category(UnitTest::class)
 class AlgorithmErrorMapperTest {
 
-
     val subject = AlgorithmErrorMapper()
 
     @Test
@@ -46,4 +45,17 @@ class AlgorithmErrorMapperTest {
         }
     }
 
+    @Test
+    fun `mapErrors - should map a ServiceError containing a BadReqest to a ResponseEntity bad request`() {
+        val inputServiceError = serviceErrorOf(ServiceError(
+            service = ServiceName.MONGO_DB,
+            errorMessage = "There was an issue inserting the object",
+            errorType = ErrorType.PERSISTANCE_ERROR
+        ))
+
+        subject.mapErrors(inputServiceError).let { actual ->
+            assertThat(actual.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+            assertThat(actual.body).isNotNull
+        }
+    }
 }

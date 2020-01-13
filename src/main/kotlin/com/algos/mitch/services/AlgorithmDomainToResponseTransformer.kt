@@ -17,6 +17,6 @@ class AlgorithmDomainToResponseTransformer : Transformer<AlgorithmDomainModel, A
     }
 }
 
-fun AlgorithmDomainModel.displayTags(): List<String> {
-    return this.category.tags.map { tag -> "Tag: ${tag.label}" }
+fun AlgorithmDomainModel.displayTags(): String {
+    return this.category.tags.joinToString { tag -> "Tag: ${tag.label}" }
 }

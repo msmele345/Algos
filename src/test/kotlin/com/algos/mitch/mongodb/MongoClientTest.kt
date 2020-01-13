@@ -5,7 +5,9 @@ import com.algos.mitch.result.*
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import result_test.failsAnd
 import result_test.succeedsAnd
+import java.io.IOException
 import java.lang.RuntimeException
 
 class MongoClientTest {
@@ -120,5 +122,43 @@ class MongoClientTest {
         val actual = subject.fetchAlgorithms()
 
         assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun `createAlgorithm - should invoke the mongo repo insert method`() {
+        val newAlgorithm = AlgorithmDomainModel()
+
+        whenever(mockRepo.insert(newAlgorithm)) doReturn newAlgorithm
+
+        val actual = subject.createAlgorithm(newAlgorithm)
+
+        verify(mockRepo).insert(any<AlgorithmDomainModel>())
+    }
+
+
+    @Test
+    fun `createAlgorithm - should return a Success containing the inserted Algorithm`() {
+        val newAlgorithm = AlgorithmDomainModel()
+
+        whenever(mockRepo.insert(newAlgorithm)) doReturn newAlgorithm
+
+        subject.createAlgorithm(newAlgorithm).succeedsAnd { actual ->
+            assertThat(actual).isEqualTo(newAlgorithm)
+        }
+    }
+
+    @Test
+    fun `createAlgorithm - should return a Failure with service errors if mongo fails to insert`() {
+        val expected = serviceErrorOf(ServiceError(
+            service = ServiceName.MONGO_DB,
+            errorMessage = "some error",
+            errorType = ErrorType.PERSISTANCE_ERROR
+        ))
+
+        whenever(mockRepo.insert(any<AlgorithmDomainModel>())) doThrow RuntimeException("some error")
+
+        subject.createAlgorithm(AlgorithmDomainModel()).failsAnd { serviceError ->
+            assertThat(serviceError).isEqualTo(expected)
+        }
     }
 }

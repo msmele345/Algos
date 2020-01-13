@@ -1,7 +1,7 @@
 package com.algos.mitch.controller
 
+import com.algos.mitch.algo_store.AlgorithmDomainModel
 import com.algos.mitch.algo_store.AlgorithmRequest
-import com.algos.mitch.algo_store.AlgorithmResponse
 import com.algos.mitch.algo_store.AlgorithmResponses
 import com.algos.mitch.algo_store.AlgorithmSummaryResponse
 import com.algos.mitch.services.AlgorithmService
@@ -11,8 +11,9 @@ import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
 import org.junit.experimental.categories.Category
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -38,7 +39,7 @@ class AlgorithmControllerTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 2,
-            categoryTags = listOf("Tag: Collections", "Tag: Data Processing")
+            categoryTags = "Tag: Collections, Tag: Data Processing"
         ), AlgorithmSummaryResponse(
             name = "popLast",
             codeSnippet = """
@@ -46,7 +47,7 @@ class AlgorithmControllerTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 1,
-            categoryTags = listOf("Tag: Collections", "Tag: Data Processing")
+            categoryTags = "Tag: Collections, Tag: Data Processing"
         )
 
         ))
@@ -99,4 +100,40 @@ class AlgorithmControllerTest {
 
         verify(mockService, times(1)).findAlgorithmByName(any())
     }
+
+
+    @Test
+    fun `updateAlgorithms - should invoke the algo service for updates`() {
+        val expected = AlgorithmSummaryResponse()
+
+        whenever(mockService.addAlgorithm(any())) doReturn ResponseEntity.ok(expected)
+
+        val inputAlgo = AlgorithmDomainModel().copy(
+            name = "filterList"
+        ).run {
+            jacksonObjectMapper().writeValueAsString(this)
+        }
+
+        mockMvc
+            .perform(
+                post("/addAlgorithm")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(inputAlgo)
+            )
+            .andExpect(status().is2xxSuccessful)
+
+        verify(mockService).addAlgorithm(any())
+    }
 }
+
+/*
+
+NewObject newObjectInstance = new NewObject();
+// setting fields for the NewObject
+
+mockMvc.perform(MockMvcRequestBuilders.post(uri)
+  .content(asJsonString(newObjectInstance))
+  .contentType(MediaType.APPLICATION_JSON)
+  .accept(MediaType.APPLICATION_JSON));
+
+* */

@@ -15,6 +15,7 @@ class AlgorithmErrorMapper : ErrorMapper<ResponseEntity<*>>  {
             when {
                 error.errorType == ErrorType.UNKNOWN_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR to error.generateErrorMessage(error.errorMessage)
                 error.errorType == ErrorType.ALGORITHM_NOT_FOUND -> HttpStatus.NOT_FOUND to error.generateErrorMessage(error.errorMessage)
+                error.errorType == ErrorType.PERSISTANCE_ERROR -> HttpStatus.BAD_REQUEST to error.generateErrorMessage(error.errorMessage)
                 else -> HttpStatus.BAD_GATEWAY to serviceError.generateErrorMessage("Unknown error has occurred")
             }
         }.let { (response, message) ->

@@ -44,7 +44,7 @@ class AlgorithmDomainModelToAlgorithmsTransformerTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 2,
-            categoryTags = listOf("Tag: Collections", "Tag: Data Processing")
+            categoryTags = "Tag: Collections, Tag: Data Processing"
         ), AlgorithmSummaryResponse(
             name = "popLast",
             codeSnippet = """
@@ -52,7 +52,7 @@ class AlgorithmDomainModelToAlgorithmsTransformerTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 1,
-            categoryTags = listOf("Tag: Collections", "Tag: Data Processing")
+            categoryTags = "Tag: Collections, Tag: Data Processing"
         )))
 
 

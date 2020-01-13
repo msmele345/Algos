@@ -14,8 +14,8 @@ class MongoClient(
     private val mongoErrorHandler: FaultResolver<AlgorithmDomainModel?, ServiceErrors>
 ) : AlgorithmClient {
 
-    override fun fetchAlgorithms(): Result<Algorithms, ServiceErrors> {
-        return try {
+    override fun fetchAlgorithms(): Result<Algorithms, ServiceErrors> =
+        try {
             val dbResult = mongoRepository.findAll()
             Success(Algorithms(dbResult))
         } catch (e: Exception) {
@@ -25,9 +25,21 @@ class MongoClient(
                 errorType = ErrorType.UNKNOWN_ERROR
             )))
         }
-    }
 
-    override fun getAlgorithmByName(keyName: String): Result<AlgorithmDomainModel?, ServiceErrors> = mongoErrorHandler {
+    override fun getAlgorithmByName(
+        keyName: String
+    ): Result<AlgorithmDomainModel?, ServiceErrors> = mongoErrorHandler {
         mongoRepository.findById(keyName)
     }
+
+    override fun createAlgorithm(newAlgorithm: AlgorithmDomainModel): Result<AlgorithmDomainModel, ServiceErrors> =
+        try {
+            Success(mongoRepository.insert(newAlgorithm))
+        } catch (ex: Exception) {
+            Failure(serviceErrorOf(ServiceError(
+                errorType = ErrorType.PERSISTANCE_ERROR,
+                errorMessage = ex.localizedMessage,
+                service = ServiceName.MONGO_DB
+            )))
+        }
 }

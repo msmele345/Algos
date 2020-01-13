@@ -34,7 +34,7 @@ class AlgorithmDomainToResponseTransformerTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 2,
-            categoryTags = listOf("Tag: Collections", "Tag: Data Processing")
+            categoryTags = "Tag: Collections, Tag: Data Processing"
         )
 
         val actual = subject.transform(inputADM)

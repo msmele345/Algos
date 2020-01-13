@@ -23,8 +23,8 @@ interface DataBag
 
 interface NullDataBag: DataBag
 
-
 interface AlgorithmClient {
     fun fetchAlgorithms(): Result<Algorithms, ServiceErrors>
     fun getAlgorithmByName(keyName: String): Result<AlgorithmDomainModel?, ServiceErrors>
+    fun createAlgorithm(newAlgorithm: AlgorithmDomainModel): Result<AlgorithmDomainModel, ServiceErrors>
 }

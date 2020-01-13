@@ -7,6 +7,7 @@ import com.algos.mitch.algo_store.AlgorithmResponse
 import com.algos.mitch.mongodb.MongoClient
 import com.algos.mitch.redisClient.RedisClient
 import com.algos.mitch.result.*
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -34,11 +35,20 @@ class AlgorithmService(
     fun findAlgorithmByName(algorithmRequest: AlgorithmRequest): ResponseEntity<*> {
         return mongoClient.getAlgorithmByName(algorithmRequest.nameId)
             .mapSuccess { algorithmDomainModel: AlgorithmDomainModel? ->
-
                 algorithmDomainModel?.let { validAlgorithmResponse ->
                     ResponseEntity.status(HttpStatus.OK).body(domainToResponseTransformer.transform(validAlgorithmResponse))
                 } ?: ResponseEntity.status(HttpStatus.NOT_FOUND).body("Algorithm Not Found")
 
+            }.getOrElse { serviceErrors ->
+                errorMapper.mapErrors(serviceErrors)
+            }
+    }
+
+    fun addAlgorithm(newAlgorithm: AlgorithmDomainModel): ResponseEntity<*> {
+        return mongoClient.createAlgorithm(newAlgorithm)
+            .mapSuccess { dbResponse ->
+                ResponseEntity.status(HttpStatus.OK)
+                    .body(dbResponse)
             }.getOrElse { serviceErrors ->
                 errorMapper.mapErrors(serviceErrors)
             }
