@@ -1,1 +1,1 @@
-# KotlinAlgos
+# Algorithm API
