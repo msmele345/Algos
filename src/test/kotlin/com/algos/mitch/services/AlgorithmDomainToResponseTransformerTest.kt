@@ -24,7 +24,8 @@ class AlgorithmDomainToResponseTransformerTest {
                 categoryDescription = "EASY",
                 difficultyLevel = 2,
                 tags = listOf(Tag("Collections"), Tag("Data Processing"))
-            )
+            ),
+            isSolved = true
         )
 
         val expectedResponse = AlgorithmSummaryResponse(
@@ -34,11 +35,33 @@ class AlgorithmDomainToResponseTransformerTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 2,
-            categoryTags = "Tag: Collections, Tag: Data Processing"
+            categoryTags = "Tag: Collections, Tag: Data Processing",
+            isSolved = true
         )
 
         val actual = subject.transform(inputADM)
 
         assertThat(actual).isEqualToComparingFieldByFieldRecursively(expectedResponse)
+    }
+
+    @Test
+    fun `displayTags - should transform a list of Category tags into a single string`() {
+        val inputADM = AlgorithmDomainModel(
+            name = "countDupes",
+            codeSnippet = """
+            fun countDupes(arr: Array<Int>): Int = arr.size - arr.distinct()
+        """.trimIndent(),
+            category = com.algos.mitch.algo_store.Category(
+                categoryDescription = "EASY",
+                difficultyLevel = 2,
+                tags = listOf(Tag("Collections"), Tag("Data Processing"))
+            )
+        )
+
+        val expectedString = "Tag: Collections, Tag: Data Processing"
+
+        inputADM.displayTags().let { actual ->
+            assertThat(actual).isEqualTo(expectedString)
+        }
     }
 }

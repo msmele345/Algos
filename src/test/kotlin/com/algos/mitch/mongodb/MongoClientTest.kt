@@ -6,6 +6,7 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import result_test.failsAnd
+import result_test.succeeds
 import result_test.succeedsAnd
 import java.io.IOException
 import java.lang.RuntimeException
@@ -29,7 +30,8 @@ class MongoClientTest {
             categoryDescription = "EASY",
             difficultyLevel = 2,
             tags = listOf(Tag("Collections"))
-        )
+        ),
+        isSolved = false
     )
 
     val mockAlgorithmDomainModel2 = AlgorithmDomainModel(
@@ -122,6 +124,17 @@ class MongoClientTest {
         val actual = subject.fetchAlgorithms()
 
         assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun `fetchAlgorithms - algorithmResponse should contain isSolved fields`() {
+        val domainAlgorithm = AlgorithmDomainModel(name = "testAlgo", isSolved = true)
+
+        whenever(mockRepo.findAll()) doReturn listOf(domainAlgorithm)
+
+        subject.fetchAlgorithms().succeedsAnd { result ->
+            assertThat(result).isEqualTo(Algorithms(listOf(domainAlgorithm)))
+        }
     }
 
     @Test

@@ -18,5 +18,6 @@ data class AlgorithmSummaryResponse(
     val codeSnippet: String = "",
     val categoryDescription: String = "",
     val difficultyLevel: Int? = null,
-    val categoryTags: String = ""
+    val categoryTags: String = "",
+    val isSolved: Boolean = false
 )

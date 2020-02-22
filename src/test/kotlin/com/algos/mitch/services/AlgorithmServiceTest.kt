@@ -37,7 +37,8 @@ class AlgorithmServiceTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 2,
-            categoryTags = "Tag: Collections, Tag: Data Processing"
+            categoryTags = "Tag: Collections, Tag: Data Processing",
+            isSolved = false
         ), AlgorithmSummaryResponse(
             name = "popLast",
             codeSnippet = """
@@ -45,7 +46,8 @@ class AlgorithmServiceTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 1,
-            categoryTags = "Tag: Collections, Tag: Data Processing"
+            categoryTags = "Tag: Collections, Tag: Data Processing",
+            isSolved = true
         )
 
         ))
@@ -70,7 +72,8 @@ class AlgorithmServiceTest {
                 categoryDescription = "EASY",
                 difficultyLevel = 1,
                 tags = listOf(Tag("Collections"), Tag("Data Processing"))
-            )
+            ),
+            isSolved = true
         ))
 
 
@@ -80,6 +83,7 @@ class AlgorithmServiceTest {
 
         subject.processAllAlgorithms().let { result ->
             assertThat(result.statusCode).isEqualTo(HttpStatus.OK)
+            assertThat(result.body).isEqualTo(expectedResponses)
             assertThat(result.body).isEqualTo(expectedResponses)
         }
 
@@ -110,7 +114,8 @@ class AlgorithmServiceTest {
                 categoryDescription = "EASY",
                 difficultyLevel = 1,
                 tags = listOf(Tag("Collections"), Tag("Data Processing"))
-            )
+            ),
+            isSolved = true
         )
 
         val expected = AlgorithmSummaryResponse(
@@ -120,7 +125,8 @@ class AlgorithmServiceTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 1,
-            categoryTags = "Tag: Collections, Tag: Data Processing"
+            categoryTags = "Tag: Collections, Tag: Data Processing",
+            isSolved = true
         )
 
         whenever(mockMongoClient.getAlgorithmByName(any())) doReturn Success(mongoResponse)

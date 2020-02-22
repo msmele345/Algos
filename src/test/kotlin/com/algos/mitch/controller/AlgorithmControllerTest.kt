@@ -39,7 +39,8 @@ class AlgorithmControllerTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 2,
-            categoryTags = "Tag: Collections, Tag: Data Processing"
+            categoryTags = "Tag: Collections, Tag: Data Processing",
+            isSolved = false
         ), AlgorithmSummaryResponse(
             name = "popLast",
             codeSnippet = """
@@ -47,7 +48,8 @@ class AlgorithmControllerTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 1,
-            categoryTags = "Tag: Collections, Tag: Data Processing"
+            categoryTags = "Tag: Collections, Tag: Data Processing",
+            isSolved = false
         )
 
         ))
@@ -70,7 +72,7 @@ class AlgorithmControllerTest {
 
         val inputAlgorithmRequest = AlgorithmRequest(nameId = "palindrome")
 
-        val expectedAlgorithmResponse = AlgorithmSummaryResponse("palindrome")
+        val expectedAlgorithmResponse = AlgorithmSummaryResponse("palindrome", isSolved = false)
 
         whenever(mockService.findAlgorithmByName(inputAlgorithmRequest)) doReturn ResponseEntity.ok(expectedAlgorithmResponse)
 
@@ -104,7 +106,7 @@ class AlgorithmControllerTest {
 
     @Test
     fun `updateAlgorithms - should invoke the algo service for updates`() {
-        val expected = AlgorithmSummaryResponse()
+        val expected = AlgorithmSummaryResponse(isSolved = false)
 
         whenever(mockService.addAlgorithm(any())) doReturn ResponseEntity.ok(expected)
 

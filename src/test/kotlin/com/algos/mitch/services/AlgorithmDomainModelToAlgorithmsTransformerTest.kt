@@ -44,7 +44,8 @@ class AlgorithmDomainModelToAlgorithmsTransformerTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 2,
-            categoryTags = "Tag: Collections, Tag: Data Processing"
+            categoryTags = "Tag: Collections, Tag: Data Processing",
+            isSolved = false
         ), AlgorithmSummaryResponse(
             name = "popLast",
             codeSnippet = """
@@ -52,7 +53,8 @@ class AlgorithmDomainModelToAlgorithmsTransformerTest {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 1,
-            categoryTags = "Tag: Collections, Tag: Data Processing"
+            categoryTags = "Tag: Collections, Tag: Data Processing",
+            isSolved = false
         )))
 
 
@@ -63,4 +65,14 @@ class AlgorithmDomainModelToAlgorithmsTransformerTest {
         assertThat(actual).isEqualTo(expectedResponses)
     }
 
+    @Test
+    fun `transform - respones should now contain isSolved boolean`() {
+        val actual = subject.transform(domainResponses)
+
+        actual.run {
+            forEach {
+                assertThat(it.isSolved).isEqualTo(false)
+            }
+        }
+    }
 }

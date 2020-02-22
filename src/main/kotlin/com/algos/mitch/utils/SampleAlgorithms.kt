@@ -11,7 +11,8 @@ fun sampleAlgorithm(): List<AlgorithmSummaryResponse> {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 1,
-            categoryTags = "Tag: Arrays, Tag: Data Processing"
+            categoryTags = "Tag: Arrays, Tag: Data Processing",
+            isSolved = false
         ),
         AlgorithmSummaryResponse(
             name = "getSize",
@@ -20,7 +21,8 @@ fun sampleAlgorithm(): List<AlgorithmSummaryResponse> {
         """.trimIndent(),
             categoryDescription = "HARD",
             difficultyLevel = 4,
-            categoryTags = "Tag: Collections, Tag: Data Processing"
+            categoryTags = "Tag: Collections, Tag: Data Processing",
+            isSolved = false
         ),
         AlgorithmSummaryResponse(
             name = "findFirst",
@@ -29,7 +31,8 @@ fun sampleAlgorithm(): List<AlgorithmSummaryResponse> {
         """.trimIndent(),
             categoryDescription = "MEDIUM",
             difficultyLevel = 3,
-            categoryTags = "Tag: Processing, Tag: Parse Collections"
+            categoryTags = "Tag: Processing, Tag: Parse Collections",
+            isSolved = false
         ),
         AlgorithmSummaryResponse(
             name = "updateString",
@@ -38,7 +41,8 @@ fun sampleAlgorithm(): List<AlgorithmSummaryResponse> {
         """.trimIndent(),
             categoryDescription = "EXTREME PROGRAMMING",
             difficultyLevel = 5,
-            categoryTags = "Tag: Strings, Tag: Data Processing"
+            categoryTags = "Tag: Strings, Tag: Data Processing",
+            isSolved = false
         ),
         AlgorithmSummaryResponse(
             name = "countDupes",
@@ -47,7 +51,8 @@ fun sampleAlgorithm(): List<AlgorithmSummaryResponse> {
         """.trimIndent(),
             categoryDescription = "EASY",
             difficultyLevel = 2,
-            categoryTags = "Tag: Collections, Tag: Collection Analytics"
+            categoryTags = "Tag: Collections, Tag: Collection Analytics",
+            isSolved = false
         )
     )
 }

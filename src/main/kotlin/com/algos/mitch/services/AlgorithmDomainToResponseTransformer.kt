@@ -12,7 +12,8 @@ class AlgorithmDomainToResponseTransformer : Transformer<AlgorithmDomainModel, A
             codeSnippet = from.codeSnippet,
             categoryDescription = from.category.categoryDescription,
             difficultyLevel = from.category.difficultyLevel,
-            categoryTags = from.displayTags()
+            categoryTags = from.displayTags(),
+            isSolved = from.isSolved
         )
     }
 }

@@ -13,7 +13,8 @@ class AlgorithmDomainModelToAlgorithmsTransformer : Transformer<Algorithms, Algo
                 codeSnippet = domainAlgorithm.codeSnippet,
                 categoryDescription = domainAlgorithm.category.categoryDescription,
                 difficultyLevel = domainAlgorithm.category.difficultyLevel,
-                categoryTags = domainAlgorithm.displayTags()
+                categoryTags = domainAlgorithm.displayTags(),
+                isSolved = domainAlgorithm.isSolved
             )
         })
     }
