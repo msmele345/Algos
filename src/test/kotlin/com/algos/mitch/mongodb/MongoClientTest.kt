@@ -5,10 +5,8 @@ import com.algos.mitch.result.*
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import result_test.failsAnd
-import result_test.succeeds
-import result_test.succeedsAnd
-import java.io.IOException
+import failsAnd
+import succeedsAnd
 import java.lang.RuntimeException
 
 class MongoClientTest {

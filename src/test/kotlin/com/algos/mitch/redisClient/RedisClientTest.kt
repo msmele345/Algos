@@ -10,7 +10,7 @@ package com.algos.mitch.redisClient
 //import org.assertj.core.api.Assertions.assertThat
 //import org.junit.Test
 //import org.junit.experimental.categories.Category
-//import result_test.succeedsAnd
+//import succeedsAnd
 //import java.lang.RuntimeException
 //import java.util.*
 //

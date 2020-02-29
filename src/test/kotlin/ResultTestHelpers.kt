@@ -1,5 +1,3 @@
-package result_test
-
 import com.algos.mitch.result.Failure
 import com.algos.mitch.result.Result
 import com.algos.mitch.result.Success

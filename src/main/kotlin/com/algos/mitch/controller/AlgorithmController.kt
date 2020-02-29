@@ -8,6 +8,7 @@ import com.algos.mitch.reactive_repo.GeneratedRepository
 import com.algos.mitch.reactive_repo.ReactiveRepository
 import com.algos.mitch.services.AlgorithmService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.ui.Model
@@ -21,14 +22,12 @@ class AlgorithmController(
         private val algoService: AlgorithmService
 ) {
 
-    @Autowired
-    lateinit var algoRepo: ReactiveRepository
-
     @RequestMapping("/algorithms/all")
     fun getAllAlgorithms(): ResponseEntity<*> {
         return algoService.processAllAlgorithms().let { response ->
             ResponseEntity.ok(response.body ?: "")
         }
+//        return ResponseEntity.badRequest().body("Bad request")
     }
 
 
@@ -48,18 +47,4 @@ class AlgorithmController(
         return algoService.addAlgorithm(algorithm)
     }
 
-    @CrossOrigin
-    @GetMapping("/algorithm/stream",
-        produces = [MediaType.TEXT_EVENT_STREAM_VALUE]
-    )
-    fun feed(model: Model) : Flux<AlgorithmSummaryResponse> {
-        val reactiveDataDrivenMode = ReactiveDataDriverContextVariable(algoRepo.findAll(), 1)
-        model.addAttribute("algorithmSummaryResponses", reactiveDataDrivenMode)
-        return algoRepo.findAll()
-
-    }
 }
-
-//need to choose the correct taskExecutor
-//refactor categoryTags to be a string on the response
-//find the correct bootstrap
