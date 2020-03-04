@@ -3,7 +3,7 @@ What is it?
 
 - A REST Api that serves Algorithm Domain objects from a Mongo Db instance.
 - Responses are transformed/formatted at runtime for the end user.
-- Please see [Algorithm-Cloud-Processor](https://github.com/msmele345/algorithm-cloud-processor/) and Algorithm-Producer apps in my Github for the back end loader sibling applications.
+- Please see [Algorithm-Cloud-Processor](https://github.com/msmele345/algorithm-cloud-processor/) and [Algorithm-Producer](https://github.com/msmele345/algorithm-producer/) apps in my Github for the back end loader sibling applications.
  
 
 
@@ -51,7 +51,7 @@ Example Response:
   }
 ```
 
-###Techologies Required:
+### Techologies Required:
 
 Java 8
 Docker
@@ -63,12 +63,12 @@ Local Setup
 
 Go to the algorithm-cloud-processor director cd Docker Run docker-compose up -d to start Rabbit, Kafka, Mongo Db and Zookeeper services Run ./gradlew bootRun to start the app The app will be running and ready to accept messages from Kafka
 
-###Setup Docker
+### Setup Docker
 
 **Run** 
 ./clean_and_start_docker.sh from the command line in the root directory of this project. Note, this will prune all volumes and containers prior to running docker compose
 
-###Useful Docker commands:
+### Useful Docker commands:
 list containers:
 docker ps -a 
 
@@ -81,10 +81,9 @@ docker rm containerid
 Cleanup docker container space:
 volume rm $(docker volume ls -qf dangling=true)
 
-###MongoDb CLI Access and Commands:
-1.docker exec -it mongodb-1 sh
-
+### MongoDb CLI Access and Commands:
 ```
+>>docker exec -it mongodb-1 sh
 >>mongo
 >>use algorithmDomainModels
 (Show all current records:)
