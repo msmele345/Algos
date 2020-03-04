@@ -2,7 +2,7 @@
 What is it?
 
 - A REST Api that serves Algorithm Domain objects from a Mongo Db instance.
-- Responses are are transformed/formatted at runtime for the end user.
+- Responses are transformed/formatted at runtime for the end user.
 - Please see Algorithm-Cloud-Processor and Algorithm-Producer apps in my Github for the back end loader sibling applications.
  
 
