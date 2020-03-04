@@ -30,6 +30,7 @@ class EventsControllerTest {
     fun `feed - success - should call the reactive repo for AlgoirthmEvents`() {
 
         val fluxResponse = AlgorithmSummaryResponse(name = "testAlgo")
+
         whenever(mockEventsRepo.findAll()) doAnswer {
            Flux.create {
                it.next(fluxResponse)

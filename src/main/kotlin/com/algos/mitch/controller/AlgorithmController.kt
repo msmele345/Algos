@@ -27,7 +27,6 @@ class AlgorithmController(
         return algoService.processAllAlgorithms().let { response ->
             ResponseEntity.ok(response.body ?: "")
         }
-//        return ResponseEntity.badRequest().body("Bad request")
     }
 
 
