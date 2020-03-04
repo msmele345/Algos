@@ -3,11 +3,11 @@ What is it?
 
 - A REST Api that serves Algorithm Domain objects from a Mongo Db instance.
 - Responses are transformed/formatted at runtime for the end user.
-- Please see Algorithm-Cloud-Processor and Algorithm-Producer apps in my Github for the back end loader sibling applications.
+- Please see [Algorithm-Cloud-Processor](https://github.com/msmele345/algorithm-cloud-processor/) and Algorithm-Producer apps in my Github for the back end loader sibling applications.
  
 
 
-###Endpoints:
+### Endpoints:
 Request all algorithms:
 
 **/algorithms/all**
