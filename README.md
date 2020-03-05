@@ -10,6 +10,8 @@ What is it?
 ### Endpoints:
 Request all algorithms:
 
+http://localhost:8080/algorithms/all
+
 **/algorithms/all**
 
 Example Response:
@@ -20,7 +22,7 @@ Example Response:
     "codeSnippet": "fun countDuplicates(inputArray: Array<String>): Int { fun countDuplicates(inputArray: Array<String> : Int = (inputArray.distinct()) - (inputArray.count()) }  }",
     "categoryDescription": "EASY",
     "difficultyLevel": 2,
-    "categoryTags": "Tag: String Manipulation,
+    "categoryTags": "Tag: String Manipulation
     "solved": true
   },
   {
