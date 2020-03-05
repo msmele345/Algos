@@ -1,0 +1,15 @@
+Hello, John! It looks like you booked a Basic Economy flight.
+Are you aware that this flight doesn't have any storage for carry-on luggage?
+ -No
+  Some other limitations you may want to consider is that you will not be able to pick a seat.
+  1:We're happy to let you know that we can upgrade you today for just $25!
+  Would you like to do that now?
+   -Not right now
+    =Okay, please let our customer service team know if you change your mind.
+   -Yes, please upgrade
+    =Okay, you've been upgraded!
+ -Yes
+  >1
+---
+No
+Not right now
