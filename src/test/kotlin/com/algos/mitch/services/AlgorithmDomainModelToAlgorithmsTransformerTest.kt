@@ -22,7 +22,8 @@ class AlgorithmDomainModelToAlgorithmsTransformerTest {
             categoryDescription = "EASY",
             difficultyLevel = 2,
             tags = listOf(Tag("Collections"), Tag("Data Processing"))
-        )
+        ),
+        isSolved = false
     ), AlgorithmDomainModel(
         name = "popLast",
         codeSnippet = """
@@ -32,7 +33,8 @@ class AlgorithmDomainModelToAlgorithmsTransformerTest {
             categoryDescription = "EASY",
             difficultyLevel = 1,
             tags = listOf(Tag("Collections"), Tag("Data Processing"))
-        )
+        ),
+        isSolved = false
     )))
 
 
