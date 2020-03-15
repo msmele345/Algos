@@ -3,7 +3,7 @@ What is it?
 
 - A REST Api that serves Algorithm Domain objects from a Mongo Db instance.
 - Responses are transformed/formatted at runtime for the end user.
-- Please see [Algorithm-Cloud-Processor](https://github.com/msmele345/algorithm-cloud-processor/) and [Algorithm-Producer](https://github.com/msmele345/algorithm-producer/) apps in my Github for the back end loader sibling applications.
+- Please see the [Algorithm-Cloud-Processor](https://github.com/msmele345/algorithm-cloud-processor/) and [Algorithm-Producer](https://github.com/msmele345/algorithm-producer/) apps in my Github for the back end kafka producer and grid loader applications that are tied to this api.
  
 
 
