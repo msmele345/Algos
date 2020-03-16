@@ -5,6 +5,7 @@ import com.algos.mitch.test_helpers.UnitTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.experimental.categories.Category
+import java.util.*
 
 @Category(UnitTest::class)
 class AlgorithmDomainModelToAlgorithmsTransformerTest {
@@ -12,8 +13,11 @@ class AlgorithmDomainModelToAlgorithmsTransformerTest {
 
     val subject = AlgorithmDomainModelToAlgorithmsTransformer()
 
+    val uuid1 = UUID.randomUUID()
+    val uuid2 = UUID.randomUUID()
 
     val domainResponses = Algorithms(listOf(AlgorithmDomainModel(
+        id = uuid1,
         name = "countDupes",
         codeSnippet = """
             fun countDupes(arr: Array<Int>): Int = arr.size - arr.distinct()
@@ -25,6 +29,7 @@ class AlgorithmDomainModelToAlgorithmsTransformerTest {
         ),
         isSolved = false
     ), AlgorithmDomainModel(
+        id = uuid2,
         name = "popLast",
         codeSnippet = """
             fun popLast(arr: Array<Int>): Int = arr.dropLast(1)
@@ -40,6 +45,7 @@ class AlgorithmDomainModelToAlgorithmsTransformerTest {
 
     val expectedResponses = AlgorithmResponses(
         listOf(AlgorithmSummaryResponse(
+            id = uuid1,
             name = "countDupes",
             codeSnippet = """
             fun countDupes(arr: Array<Int>): Int = arr.size - arr.distinct()
@@ -49,6 +55,7 @@ class AlgorithmDomainModelToAlgorithmsTransformerTest {
             categoryTags = "Tag: Collections, Tag: Data Processing",
             isSolved = false
         ), AlgorithmSummaryResponse(
+            id = uuid2,
             name = "popLast",
             codeSnippet = """
             fun popLast(arr: Array<Int>): Int = arr.dropLast(1)

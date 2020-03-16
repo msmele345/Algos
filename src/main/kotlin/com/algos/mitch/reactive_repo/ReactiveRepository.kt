@@ -1,10 +1,8 @@
 package com.algos.mitch.reactive_repo
 
-import com.algos.mitch.algo_store.AlgorithmDomainModel
 import com.algos.mitch.algo_store.AlgorithmSummaryResponse
-import com.algos.mitch.mongodb.AlgorithmMongoRepository
-import com.algos.mitch.utils.generateAlgorithm
-import com.algos.mitch.utils.sampleAlgorithm
+import com.algos.mitch.utils.AlgorithmFactory
+import com.algos.mitch.utils.AlgorithmFactory.sampleAlgorithm
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 import java.time.Duration

@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import javax.xml.ws.Response
 
 
 @Service
@@ -52,5 +53,15 @@ class AlgorithmService(
             }.getOrElse { serviceErrors ->
                 errorMapper.mapErrors(serviceErrors)
             }
+    }
+
+    fun processAllSets(): ResponseEntity<*> {
+        return try {
+            mongoClient.fetchAllSets().let { sets ->
+                ResponseEntity.ok().body(sets)
+            }
+        } catch (ex: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.localizedMessage)
+        }
     }
 }

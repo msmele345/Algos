@@ -2,6 +2,7 @@ package com.algos.mitch.algo_store
 
 import org.springframework.data.annotation.Id
 import java.io.Serializable
+import java.util.*
 
 //@RedisHash("AlgorithmResponse")
 data class AlgorithmResponse(
@@ -14,6 +15,7 @@ data class AlgorithmResponse(
 
 
 data class AlgorithmSummaryResponse(
+    val id: UUID? = null,
     val name: String = "",
     val codeSnippet: String = "",
     val categoryDescription: String = "",
@@ -21,3 +23,4 @@ data class AlgorithmSummaryResponse(
     val categoryTags: String = "",
     val isSolved: Boolean = false
 )
+

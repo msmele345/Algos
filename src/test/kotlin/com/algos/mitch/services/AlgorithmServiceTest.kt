@@ -9,6 +9,7 @@ import org.junit.Test
 import org.junit.experimental.categories.Category
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import java.lang.RuntimeException
 
 @Category(UnitTest::class)
 class AlgorithmServiceTest {
@@ -182,5 +183,56 @@ class AlgorithmServiceTest {
         val actual = subject.addAlgorithm(newAlgorithm)
 
         assertThat(actual.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+    }
+
+    @Test
+    fun `processAllSets - should call the mongoDb client`() {
+
+        subject.processAllSets()
+
+        verify(mockMongoClient).fetchAllSets()
+    }
+
+    @Test
+    fun `processAllSets - should return a list of Sets from the mongodb repo`() {
+
+        whenever(mockMongoClient.fetchAllSets()) doReturn listOf(
+            CustomSet(id = "1", name = "CoolSet"),
+            CustomSet(id = "2", name = "JavaSet")
+        )
+
+        val expectedResponse =
+            ResponseEntity.ok(listOf(
+                CustomSet(id = "1", name = "CoolSet"),
+                CustomSet(id = "2", name = "JavaSet")
+            ))
+
+        subject.processAllSets().let { actual ->
+            assertThat(actual.statusCode).isEqualTo(HttpStatus.OK)
+            assertThat(actual.body).isEqualToIgnoringGivenFields(expectedResponse.body, "id")
+        }
+    }
+
+    @Test
+    fun `processAllSets - should return a 500 if fetcAllSets throws an exception`() {
+
+        whenever(mockMongoClient.fetchAllSets()) doThrow RuntimeException("Some error occured")
+
+        subject.processAllSets().let { actual ->
+            assertThat(actual.statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
+            assertThat(actual.body).isEqualTo("Some error occured")
+        }
+    }
+
+    @Test
+    fun `processAllSets - success - should return a 200 Empty if the fetcAllSets response is empty`() {
+
+        val expectedBodyResponse = emptyList<CustomSet>()
+        whenever(mockMongoClient.fetchAllSets()) doReturn expectedBodyResponse
+
+        subject.processAllSets().let { actual ->
+            assertThat(actual.statusCode).isEqualTo(HttpStatus.OK)
+            assertThat(actual.body).isEqualTo(expectedBodyResponse)
+        }
     }
 }

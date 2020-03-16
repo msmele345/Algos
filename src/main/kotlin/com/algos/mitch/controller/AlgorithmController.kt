@@ -2,19 +2,9 @@ package com.algos.mitch.controller
 
 import com.algos.mitch.algo_store.AlgorithmDomainModel
 import com.algos.mitch.algo_store.AlgorithmRequest
-import com.algos.mitch.algo_store.AlgorithmSummaryResponse
-import com.algos.mitch.mongodb.AlgorithmMongoRepository
-import com.algos.mitch.reactive_repo.GeneratedRepository
-import com.algos.mitch.reactive_repo.ReactiveRepository
 import com.algos.mitch.services.AlgorithmService
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
-import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable
-import reactor.core.publisher.Flux
 
 
 @RestController
@@ -28,7 +18,6 @@ class AlgorithmController(
             ResponseEntity.ok(response.body ?: "")
         }
     }
-
 
     @RequestMapping("/algorithms/{name}")
     fun getAlgorithmByName(
@@ -45,5 +34,11 @@ class AlgorithmController(
     ): ResponseEntity<*> {
         return algoService.addAlgorithm(algorithm)
     }
+
+    @RequestMapping("/sets/all", method = [RequestMethod.GET])
+    fun getAllSets(): ResponseEntity<*> {
+        return algoService.processAllSets()
+    }
+
 
 }

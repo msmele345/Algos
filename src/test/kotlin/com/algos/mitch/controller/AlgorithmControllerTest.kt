@@ -1,9 +1,6 @@
 package com.algos.mitch.controller
 
-import com.algos.mitch.algo_store.AlgorithmDomainModel
-import com.algos.mitch.algo_store.AlgorithmRequest
-import com.algos.mitch.algo_store.AlgorithmResponses
-import com.algos.mitch.algo_store.AlgorithmSummaryResponse
+import com.algos.mitch.algo_store.*
 import com.algos.mitch.services.AlgorithmService
 import com.algos.mitch.test_helpers.UnitTest
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -13,10 +10,12 @@ import org.junit.experimental.categories.Category
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import java.lang.RuntimeException
 
 @Category(UnitTest::class)
 class AlgorithmControllerTest {
@@ -72,7 +71,7 @@ class AlgorithmControllerTest {
 
         val inputAlgorithmRequest = AlgorithmRequest(nameId = "palindrome")
 
-        val expectedAlgorithmResponse = AlgorithmSummaryResponse("palindrome", isSolved = false)
+        val expectedAlgorithmResponse = AlgorithmSummaryResponse(name = "palindrome", isSolved = false)
 
         whenever(mockService.findAlgorithmByName(inputAlgorithmRequest)) doReturn ResponseEntity.ok(expectedAlgorithmResponse)
 
@@ -126,16 +125,57 @@ class AlgorithmControllerTest {
 
         verify(mockService).addAlgorithm(any())
     }
+
+    @Test
+    fun getSets_success_shouldReturn200_with_ListOfSets() {
+
+
+        val expected = ResponseEntity.ok(listOf(
+            CustomSet(name = "CoolSet"),
+            CustomSet(name = "JavaSet")
+        ))
+        whenever(mockService.processAllSets()) doReturn expected
+
+        mockMvc
+            .perform {
+                MockMvcRequestBuilders.get("/sets/all")
+                    .accept(MediaType.APPLICATION_JSON)
+                    .buildRequest(it)
+            }
+            .andExpect {
+                status().is2xxSuccessful
+                content().string(
+                    jacksonObjectMapper()
+                        .run {
+                            writeValueAsString(listOf(
+                                CustomSet(name = "CoolSet"),
+                                CustomSet(name = "JavaSet")
+                            ))
+                        })
+            }
+        verify(mockService).processAllSets()
+    }
+
+
+    @Test
+    fun `getSets - failure - shouldReturn500IfServiceThrowsException`() {
+
+
+        whenever(mockService.processAllSets()) doReturn ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("some error occured")
+
+        mockMvc
+            .perform {
+                MockMvcRequestBuilders.get("/sets/all")
+                    .buildRequest(it)
+            }
+            .andExpect {
+                status().is5xxServerError
+                content().string("some error occured")
+            }
+
+    }
 }
 
-/*
-
-NewObject newObjectInstance = new NewObject();
-// setting fields for the NewObject
-
-mockMvc.perform(MockMvcRequestBuilders.post(uri)
-  .content(asJsonString(newObjectInstance))
-  .contentType(MediaType.APPLICATION_JSON)
-  .accept(MediaType.APPLICATION_JSON));
-
-* */
+//NEED NEGATIVE TESTS NEXT

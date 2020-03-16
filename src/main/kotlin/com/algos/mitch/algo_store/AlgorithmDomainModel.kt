@@ -5,10 +5,12 @@ import com.algos.mitch.result.ServiceErrors
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.io.Serializable
+import java.util.*
 
 @Document(collection = "algorithmDomainModels")
 data class AlgorithmDomainModel(
     @Id
+    val id: UUID? = null, //check for android 
     val name: String = "",
     val codeSnippet: String = "",
     val category: Category = Category(categoryDescription = ""),
@@ -30,6 +32,13 @@ enum class CategoryDescription(val value: String) {
     EXTREME_PROGRAMMING("EXTREME PROGRAMMING")
 }
 
+@Document(collection = "sets")
+data class CustomSet (
+    @Id
+    val id: String? = null,
+    val name: String = "",
+    val codeSnippet: String = ""
+)
 
 data class Algorithms(
     val algos: List<AlgorithmDomainModel>
