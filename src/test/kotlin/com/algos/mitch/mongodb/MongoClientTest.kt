@@ -6,14 +6,18 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import failsAnd
+import org.assertj.core.api.Assertions.assertThatThrownBy
+import succeeds
 import succeedsAnd
 import java.lang.RuntimeException
 
 class MongoClientTest {
 
     val mockRepo: AlgorithmMongoRepository = mock()
+    val mockSetRepo: SetRepository = mock()
     val mockErrorHandler: FaultResolver<AlgorithmDomainModel?, ServiceErrors> = mock()
     val subject = MongoClient(
+        setRepository = mockSetRepo,
         mongoRepository = mockRepo,
         mongoErrorHandler = mockErrorHandler
     )
@@ -170,6 +174,70 @@ class MongoClientTest {
 
         subject.createAlgorithm(AlgorithmDomainModel()).failsAnd { serviceError ->
             assertThat(serviceError).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `fetchAllSets - success - shouldReturn a list of CustomSets from repo`() {
+
+        val expected = listOf(
+            CustomSet(id = "1", name = "CoolSet"),
+            CustomSet(id = "2", name = "JavaSet")
+        )
+        whenever(mockSetRepo.setGenerator()) doReturn expected
+
+        val actual = subject.fetchAllSets()
+
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun `fetchAllSets - failure - should return ServiceErrors if setRepo throws an exception`() {
+
+        whenever(mockSetRepo.setGenerator()) doThrow RuntimeException("some error")
+
+        assertThatThrownBy {
+            subject.fetchAllSets()
+        }
+            .isInstanceOf(RuntimeException::class.java)
+            .hasMessage("some error occured")
+
+
+    }
+
+    @Test
+    fun `fetchSetById - success - should return a Success of a Custom set if provided a valid Id`() {
+
+        val expected = CustomSet(id = "1", name = "Sety")
+
+        val listOfSets = listOf(
+            CustomSet(id = "1", name = "Sety"),
+            CustomSet(id = "2", name = "CoolSet"),
+            CustomSet(id = "3", name = "BadSet")
+        )
+
+        whenever(mockSetRepo.setGenerator()) doReturn listOf(listOfSets)
+
+        val actual = subject.fetchSetById("1")
+
+        assertThat(actual.succeeds()).isEqualTo(expected)
+    }
+
+    @Test
+    fun `fetchSetById - failure - should return a Failure with ServiceErrors if set is not found`() {
+
+        val expected = Failure(serviceErrorOf(ServiceError(
+            errorType = ErrorType.ALGORITHM_NOT_FOUND,
+            errorMessage = "Set not available at this time"
+        )))
+
+        whenever(mockSetRepo.setGenerator()) doReturn listOf(
+            CustomSet(id = "1", name = "Sety"),
+            CustomSet(id = "2", name = "CoolSet")
+        )
+
+        subject.fetchSetById("3").let { actual ->
+            assertThat(actual).isEqualTo(expected)
         }
     }
 }

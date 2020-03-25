@@ -64,4 +64,13 @@ class AlgorithmService(
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.localizedMessage)
         }
     }
+
+    fun findSetById(id: String): ResponseEntity<*> {
+        return mongoClient.fetchSetById(id)
+            .mapSuccess {
+                ResponseEntity.ok(it)
+            }.getOrElse { serviceErrors ->
+                errorMapper.mapErrors(serviceErrors)
+            }
+    }
 }

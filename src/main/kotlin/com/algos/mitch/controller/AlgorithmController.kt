@@ -40,5 +40,8 @@ class AlgorithmController(
         return algoService.processAllSets()
     }
 
-
+    @RequestMapping("/sets/{id}", method = [RequestMethod.GET])
+    fun getSetById(@PathVariable id: String): ResponseEntity<*> {
+        return algoService.findSetById(id)
+    }
 }

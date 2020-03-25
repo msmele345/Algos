@@ -5,6 +5,7 @@ import com.algos.mitch.result.*
 import com.algos.mitch.test_helpers.UnitTest
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.experimental.categories.Category
 import org.springframework.http.HttpStatus
@@ -234,5 +235,48 @@ class AlgorithmServiceTest {
             assertThat(actual.statusCode).isEqualTo(HttpStatus.OK)
             assertThat(actual.body).isEqualTo(expectedBodyResponse)
         }
+    }
+
+
+    @Test
+    @Ignore
+    fun `findSetById - success - should call the mongoRepository fetchSetById`() {
+        subject.findSetById("4")
+
+        verify(mockMongoClient).fetchSetById(any())
+    }
+
+    @Test
+    fun `findSetById - success - should return the corresponding set with the providedId if valid`() {
+
+        val expected = CustomSet(id = "2", name = "JavaSet")
+
+        whenever(mockMongoClient.fetchSetById(any())) doReturn Success(expected)
+
+        val actual = subject.findSetById("2")
+
+        assertThat(actual.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(actual.body).isEqualToIgnoringGivenFields(expected, "id")
+    }
+
+    @Test
+    fun `findSetById - failure - should return ServiceErrors containing message from exception thrown`() {
+
+        val error = ServiceError(
+            service = ServiceName.MONGO_DB,
+            errorType = ErrorType.UNKNOWN_ERROR,
+            errorMessage = "something bad happened"
+        )
+        val expected = Failure(serviceErrorOf(error))
+        whenever(mockMongoClient.fetchSetById(any())) doReturn expected
+
+        whenever(mockErrorMapper.mapErrors(any())) doReturn ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(error)
+
+        val actual = subject.findSetById("12")
+        assertThat(actual.statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
+
+        assertThat(actual.body).isEqualTo(error)
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class MongoClient(
+    private val setRepository: SetRepository,
     private val mongoRepository: AlgorithmMongoRepository,
     private val mongoErrorHandler: FaultResolver<AlgorithmDomainModel?, ServiceErrors>
 ) : AlgorithmClient {
@@ -41,27 +42,16 @@ class MongoClient(
         }
 
     fun fetchAllSets(): List<CustomSet> {
-        return setGenerator()
+        return setRepository.setGenerator()
     }
 
-
-    private fun setGenerator(): List<CustomSet> {
-        val fakeNames = listOf("Sety", "JavaSet", "NewSet", "KotlinSet", "CoolSet")
-        return (0..5).map {
-            CustomSet(
-                id = createId(),
-                name = fakeNames.shuffled().last(),
-                codeSnippet = """
-                    fun add(element) { subject[size] == element  }
-                """.trimIndent()
-
-            )
-        }
+    fun fetchSetById(id: String): Result<CustomSet, ServiceErrors> {
+        return setRepository.setGenerator().find { it.id == id }
+            ?.let {
+                Success(it)
+            } ?: Failure(serviceErrorOf(ServiceError(
+            errorType = ErrorType.ALGORITHM_NOT_FOUND,
+            errorMessage = "Set not available at this time"
+        )))
     }
-
-    private fun createId() = (0..50)
-        .toList()
-        .shuffled()
-        .last()
-        .toString()
 }

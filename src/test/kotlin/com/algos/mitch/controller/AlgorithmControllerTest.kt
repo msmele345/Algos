@@ -160,7 +160,6 @@ class AlgorithmControllerTest {
     @Test
     fun `getSets - failure - shouldReturn500IfServiceThrowsException`() {
 
-
         whenever(mockService.processAllSets()) doReturn ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body("some error occured")
@@ -174,7 +173,21 @@ class AlgorithmControllerTest {
                 status().is5xxServerError
                 content().string("some error occured")
             }
+    }
 
+    @Test
+    fun `getSetbyId - should return a 200 with a set that matches the provided Id`() {
+
+        val expected = CustomSet(id = "4", name = "CoolSet")
+
+        whenever(mockService.findSetById(any())) doReturn ResponseEntity
+            .status(HttpStatus.OK)
+            .body(expected)
+
+        mockMvc
+            .perform(get("/sets/4"))
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(content().string(jacksonObjectMapper().writeValueAsString(expected)))
     }
 }
 
