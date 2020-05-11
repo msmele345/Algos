@@ -3,15 +3,12 @@ package com.algos.mitch.services
 import com.algos.mitch.algo_store.AlgorithmDomainModel
 import com.algos.mitch.algo_store.AlgorithmErrorMapper
 import com.algos.mitch.algo_store.AlgorithmRequest
-import com.algos.mitch.algo_store.AlgorithmResponse
 import com.algos.mitch.mongodb.MongoClient
-import com.algos.mitch.redisClient.RedisClient
-import com.algos.mitch.result.*
-import org.springframework.http.HttpHeaders
+import com.algos.mitch.result.getOrElse
+import com.algos.mitch.result.mapSuccess
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import javax.xml.ws.Response
 
 
 @Service
