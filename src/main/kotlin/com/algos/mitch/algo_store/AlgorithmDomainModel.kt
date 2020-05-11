@@ -9,8 +9,8 @@ import java.util.*
 
 @Document(collection = "algorithmDomainModels")
 data class AlgorithmDomainModel(
+    val id: UUID? = null, //check for android
     @Id
-    val id: UUID? = null, //check for android 
     val name: String = "",
     val codeSnippet: String = "",
     val category: Category = Category(categoryDescription = ""),
